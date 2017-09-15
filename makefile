@@ -1,24 +1,16 @@
-INC_DIR = include
-#test
-all: exp
+all: firstMakeTest
 
-exp: mainExp.o Shapes.o Media.o
+firstMakeTest: main.o
 ifeq (${OS}, Windows_NT)
-	g++ -o exp mainExp.o Shapes.o Media.o -lgtest
-else
-	g++ -o exp mainExp.o Shapes.o Media.o -lgtest -pthread
+	g++ -o firstMakeTest main.o -lgtest 
+else 
+	g++ -o firstMakeTest main.o  -lgtest -pthread
 endif
-	
-mainExp.o: mainExp.cpp exp.h
-	g++ -std=gnu++0x -c mainExp.cpp
-Shapes.o: $(INC_DIR)/Shapes.h Shapes.cpp
-	g++ -std=gnu++0x -c Shapes.cpp
-Media.o: $(INC_DIR)/Media.h Media.cpp
-	g++ -std=gnu++0x -c Media.cpp
-
-clean:	
-ifeq (${OS}, Windows_NT)
+main.o: main.cpp utsort.h
+	g++ -std=gnu++0x -c main.cpp
+clean:  
+ifeq (${OS}, Window_NT)
 	del *.o *.exe
 else
-	rm -f *.o exp
+	rm -f *.o firstMakeTest
 endif
