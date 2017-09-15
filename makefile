@@ -1,5 +1,5 @@
 all: firstMakeTest
-
+#Test
 firstMakeTest: main.o
 ifeq (${OS}, Windows_NT)
 	g++ -o firstMakeTest main.o -lgtest 
