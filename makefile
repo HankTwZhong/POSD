@@ -1,5 +1,5 @@
 INC_DIR = include
-
+#test
 all: exp
 
 exp: mainExp.o Shapes.o Media.o
