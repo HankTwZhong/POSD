@@ -165,7 +165,6 @@ TEST (Sort, sortByIncreasingCompactness) {
 	ASSERT_EQ(tempRec->perimeter() / tempRec ->area() ,(*(*itertest)).perimeter() /(*(*itertest)).area() );
 	itertest++;	
 	ASSERT_EQ(tempCir->perimeter() / tempCir ->area(),(*(*itertest)).perimeter() /(*(*itertest)).area() );
-	itertest++;
 
 }
 
