@@ -3,10 +3,8 @@
 
 #include <string>
 using std::string;
-// #include "Number.h"
 class Number ;
 class Atom ;
-
 class Variable{
 public:
   Variable(string s):_symbol(s){}

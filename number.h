@@ -1,14 +1,10 @@
 #ifndef NUMBER_H
 #define NUMBER_H
 
-// #include "atom.h"
-// #include "Variable.h"
 #include <string>
 using std::string;
 class Variable ;
 class Atom ;
-// #include "atom.h"
-// #include "variable.h"
 class Number{
 public:
     Number (string init_string):_string(init_string),_value(init_string){}

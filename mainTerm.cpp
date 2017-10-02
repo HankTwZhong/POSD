@@ -1,7 +1,4 @@
 #include <gtest/gtest.h>
-// #include "atom.h"
-// #include "number.h"
-// #include "variable.h"
 #include "utTerm.h"
 
 int main( int argc , char **argv )

@@ -1,7 +1,6 @@
 #include "number.h"
 #include "variable.h"
 #include "atom.h"
-// #include "atom.h"
 
 bool Number::match( string matchValue){
     if(matchValue == this->value() ){
