@@ -8,14 +8,14 @@ endif
 
 #utTerm: mainTerm.o number.o variable.o atom.o
 	#g++ -o utTerm mainTerm.o number.o variable.o atom.o -lgtest -lpthread
-mainTerm.o:  mainTerm.cpp utTerm.h number.h variable.h atom.h 
+mainTerm.o:  MainTerm.cpp utTerm.h number.h variable.h atom.h 
 	g++ -std=gnu++0x -c mainTerm.cpp 
-number.o:  number.cpp  number.h variable.h atom.h 
-	g++ -std=gnu++0x -c number.cpp
-variable.o:  variable.cpp  variable.h  number.h  atom.h
-	g++ -std=gnu++0x -c variable.cpp
-atom.o:  atom.cpp  atom.h number.h variable.h
-	g++ -std=gnu++0x -c atom.cpp variable.h
+number.o:  Number.cpp  number.h variable.h atom.h 
+	g++ -std=gnu++0x -c Number.cpp
+variable.o:  Variable.cpp  variable.h  number.h  atom.h
+	g++ -std=gnu++0x -c Variable.cpp
+atom.o:  Atom.cpp  atom.h number.h variable.h
+	g++ -std=gnu++0x -c Atom.cpp variable.h
 
 
 #exp: mainExp.o
