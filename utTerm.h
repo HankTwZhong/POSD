@@ -131,4 +131,13 @@ TEST(Var, reAssignTheSameAtom){
     ASSERT_TRUE(X.match(tom));
     ASSERT_TRUE(X.match(tom));
 }
+
+// //My test
+// TEST(Number,matchDouble){
+//     Number num (25);
+//     ASSERT_EQ("25",num.value());
+//     Number num2 (25.5);
+//     Number num2
+//     ASSERT_EQ("25.5",num2.value());
+// }
 #endif
