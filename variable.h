@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 #include "atom.h"
+// #include "struct.h"
+
 using std::string;
 using namespace std;
 
@@ -49,6 +51,7 @@ public:
   bool match( Term &term ){
     bool ret_temp = this->_did_not_assign_the_class_before;
     Variable * match_Variable = dynamic_cast<Variable *> (&term) ;
+    // Struct * Match_Struct =dynamic_cast<Struct *> (&term);
     if(match_Variable){
       if(match_Variable->_did_not_assign_the_class_before){   
         //一個共有的區間 放置 vector指標來進行存放
@@ -72,7 +75,7 @@ public:
         else
           ret_temp  =false;
       }
-    }
+    }    
     else{
       if(this->_did_not_assign_the_class_before){
         *val_ptr = term.symbol() ;
