@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include "atom.h"
-#include "number.h"
+#include "variable.h"
 
 using std::string;
 class Struct:public Term
@@ -28,10 +28,22 @@ public:
     }
     string value() const {
         string ret =_name.symbol() + "(";
-        for(int i = 0; i < _args.size() - 1 ; i++){
-            ret += _args[i]-> value() + ", "; 
+        for(int i = 0; i < _args.size() - 1 ; i++){      
+            Variable * typIsVariable = dynamic_cast<Variable *> (_args[i]);
+            if(typIsVariable){
+                ret += typIsVariable-> value() + ", "; 
+            }
+            else{
+                ret += _args[i]-> value() + ", "; 
+            }
         }   
-        ret += _args[_args.size()-1]-> value() + ")";   
+        Variable * typIsVariable = dynamic_cast<Variable *> (_args[_args.size()-1]);
+        if(typIsVariable){
+            ret += typIsVariable-> value() + ")"; 
+        }
+        else{
+            ret += _args[_args.size()-1]-> value() + ")"; 
+        }
         return  ret;
     }
     bool match (Term &term){

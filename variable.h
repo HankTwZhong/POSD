@@ -2,9 +2,11 @@
 #define VARIABLE_H
 
 #include <string>
+#include <vector>
 #include <iostream>
 #include "atom.h"
 using std::string;
+using namespace std;
 
 // class CallBackClass
 // {
@@ -36,69 +38,81 @@ using std::string;
 
 class Variable : public Term{
 public:
-  Variable(string s):_symbol(s),_value(s){ string tmp_symbol = s; val_ptr = & tmp_symbol;}
+  Variable(string s):_symbol(s),_value(s){ string* val = &_value; val_ptr = val;  (*community).push_back(this); }
   string  symbol() const{
     return _symbol;
   }
-  string value()  const{
-    return _value;
+  string value()  {
+    return (*val_ptr) ;
   }
-  // string pass_pointer_to_change_value( Term &term  ) {
-  //   if(lftptr){
-  //     lftptr->match(term);
-  //   }
-  //   if(rightptr){
-  //     rightptr->match(term);
-  //   }
-  //   //  lftptr->match(term);
-  // }
+
   bool match( Term &term ){
-    bool ret_temp = this->_assignable;
-    Variable * ps = dynamic_cast<Variable *> (&term) ;
-    if(ps){
-      if(ps->_assignable){      
-      // lftptr= ps;
-      // ps->lftptr = this;
-      =ps->val_ptr 
+    bool ret_temp = this->_did_not_assign_the_class_before;
+    Variable * match_Variable = dynamic_cast<Variable *> (&term) ;
+    if(match_Variable){
+      if(match_Variable->_did_not_assign_the_class_before){   
+        //一個共有的區間 放置 vector指標來進行存放
+        community->push_back( match_Variable  );           
+        match_Variable ->community = ( community) ;        
+        // (* val_ptr) = (* val_ptr) + *(match_Variable->val_ptr);
+        // val_ptr = match_Variable->val_ptr;          
       ret_temp =true;
       }      
-      else if(( ((*ps).value()) == value())) {
+      else if(( ((*match_Variable).value()) == value())) {
         ret_temp = true;
       }
       else{
-        ret_temp  =false;
+        if(this->_did_not_assign_the_class_before){
+          // *val_ptr = *val_ptr + *(match_Variable->val_ptr); 
+          //  val_ptr = match_Variable->val_ptr;  
+          val_ptr = match_Variable->val_ptr;
+          this->_did_not_assign_the_class_before = false;
+          ret_temp  = true;           
+        }
+        else
+          ret_temp  =false;
       }
     }
     else{
-      if( this->_assignable){
-        this->_value = term.symbol() ;
-        this->_assignable = false;
-        if(!lftptr){
-        }
-        else{
-          // pass_pointer_to_change_value(term);          
-        }
+      if(this->_did_not_assign_the_class_before){
+        *val_ptr = term.symbol() ;
+        std::cout <<symbol()+" match "+*val_ptr  << std::endl;
+        std::cout <<symbol()+" :PTR "+*val_ptr << std::endl;
+        std::cout << symbol()+" value:"+ value() << std::endl;
+        
+        
+        for(int i = 0; i < community->size()  ; i++){
+          if( ((*community)[i])->val_ptr != val_ptr ){
+            cout << "community index : "+ to_string(i)+" symbol :"+ (*community)[i]->symbol()+" ; Value: " + (*community)[i]->value() <<endl;
+            (*community)[i]->val_ptr = val_ptr;
+            cout << (*community)[i]->symbol() +"  be ASSIGN_PTR : " + *((*community)[i]->val_ptr)  <<endl;
+            
+          }
+        }  
+        this->_did_not_assign_the_class_before = false;
+
       }
-      else if(this->_value == term.symbol()){
+      else if(*val_ptr == term.symbol()){        
         ret_temp = true;
       }
+      
     }
     
     return ret_temp;
   }
 
 protected:
-  bool _assignable = true;
+  bool _did_not_assign_the_class_before = true;
   Variable *lftptr = NULL;
   Variable *rightptr = NULL;
-  string *val_ptr= null;
+  string *val_ptr= NULL;
+  std::vector <Variable *> *community = new std::vector<Variable*>();
+  
 
 private:
   string _symbol;
   string _value;
 
-  
-  // bool _assignable = true;
 };
 
 
