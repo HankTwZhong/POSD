@@ -86,9 +86,9 @@ public:
         
         for(int i = 0; i < community->size()  ; i++){
           if( ((*community)[i])->val_ptr != val_ptr ){
-            cout << "community index : "+ to_string(i)+" symbol :"+ (*community)[i]->symbol()+" ; Value: " + (*community)[i]->value() <<endl;
+            std::cout  << "community index : "+ to_string(i)+" symbol :"+ (*community)[i]->symbol()+" ; Value: " + (*community)[i]->value() <<endl;
             (*community)[i]->val_ptr = val_ptr;
-            cout << (*community)[i]->symbol() +"  be ASSIGN_PTR : " + *((*community)[i]->val_ptr)  <<endl;
+            std::cout  << (*community)[i]->symbol() +"  be ASSIGN_PTR : " + *((*community)[i]->val_ptr)  <<endl;
             
           }
         }  
