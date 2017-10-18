@@ -7,7 +7,7 @@ else
 endif
 
 MainTest.o: MainTest.cpp utStruct.h utVariable.h
-	g++ -std=c++11 -c MainTest.cpp
+	g++ -std=gnu++0x -c MainTest.cpp
 clean:
 	rm -f *.o  hw3
 stat:
