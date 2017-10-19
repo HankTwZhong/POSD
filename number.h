@@ -16,6 +16,9 @@ public:
   string symbol() const{
     return _symbol;
   }
+  string value() const {
+    return symbol();
+  }
 private:
   string _symbol;
 };

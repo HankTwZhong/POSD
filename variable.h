@@ -5,38 +5,12 @@
 #include <vector>
 #include <iostream>
 #include "atom.h"
-// #include "struct.h"
+#include "struct.h"
 
 using std::string;
 using namespace std;
 
-// class CallBackClass
-// {
-//   // 宣告回呼函式的原型;
-//   typedef void (*CBFun)( int k );
-//   // 宣告一個回呼函式指標;
-//   CBFun pCBFun;
-//   public:
-//   CallBackClass() { pCBFun= NULL; }// 初始化;
-//   void SetCallBack( CBFun fun ) { pCBFun= fun; }//註冊callback函式
 
-//   void run() { 
-//   //do something
-//   (*pCBFun)( i );//呼叫到callback function
-//   };
-
-//   void myCBFun( int k )
-//   {
-    
-//   }
-//   int main( int argc, char* argv[] )
-//   {
-//   CallBackClass cbc;
-//   cbc.SetCallBack( myCBFun );//註冊callback函式
-//   cbc.run();
-//   return 0;
-//   }
-// };
 
 class Variable : public Term{
 public:
@@ -44,7 +18,7 @@ public:
   string  symbol() const{
     return _symbol;
   }
-  string value()  {
+  string value() const {
     return (*val_ptr) ;
   }
 
@@ -78,12 +52,10 @@ public:
     }    
     else{
       if(this->_did_not_assign_the_class_before){
-        *val_ptr = term.symbol() ;
+        *val_ptr = term.value();
         std::cout <<symbol()+" match "+*val_ptr  << std::endl;
         std::cout <<symbol()+" :PTR "+*val_ptr << std::endl;
         std::cout << symbol()+" value:"+ value() << std::endl;
-        
-        
         for(int i = 0; i < community->size()  ; i++){
           if( ((*community)[i])->val_ptr != val_ptr ){
             std::cout  << "community index : "+ to_string(i)+" symbol :"+ (*community)[i]->symbol()+" ; Value: " + (*community)[i]->value() <<endl;

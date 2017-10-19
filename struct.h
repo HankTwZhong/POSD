@@ -28,22 +28,36 @@ public:
     }
     string value() const {
         string ret =_name.symbol() + "(";
+        int tp =0;
+        // std::cout  <<"name:"+ _name.symbol() <<endl;
+        // std::cout  << "size:"+ to_string( _args.size())  <<endl;
+        
         for(int i = 0; i < _args.size() - 1 ; i++){      
-            Variable * typIsVariable = dynamic_cast<Variable *> (_args[i]);
-            if(typIsVariable){
-                ret += typIsVariable-> value() + ", "; 
-            }
-            else{
-                ret += _args[i]-> value() + ", "; 
-            }
+            // Variable * typIsVariable = dynamic_cast<Variable *> (_args[i]);
+            // if(typIsVariable){
+            //     ret += typIsVariable-> value() + ", "; 
+            // }
+            // else{
+            //     ret += _args[i]-> value() + ", "; 
+            // }
+
+            // tp=i;
+            // std::cout  << "index:"+to_string(tp) <<endl;
+            // std::cout  << "value:"+_args[i]-> value() +", " <<endl;            
+            ret += _args[i]-> value() + ", "; 
         }   
-        Variable * typIsVariable = dynamic_cast<Variable *> (_args[_args.size()-1]);
-        if(typIsVariable){
-            ret += typIsVariable-> value() + ")"; 
-        }
-        else{
-            ret += _args[_args.size()-1]-> value() + ")"; 
-        }
+        // Variable vm ;
+        // Variable * typIsVariable2 = dynamic_cast<Variable *> (_args[_args.size()-1]);
+        // if(typIsVariable2){
+        //     ret += typIsVariable2-> value() + ")"; 
+        // }
+        // else{
+        //     ret += _args[_args.size()-1]-> value() + ")"; 
+        // }
+        // std::cout  << "final:"+ to_string(_args.size()-1) <<endl;
+        // std::cout  << _name.symbol()+" value:"+ _args[_args.size()-1]-> value()  <<endl;            
+        
+        ret += _args[_args.size()-1]-> value() + ")"; 
         return  ret;
     }
     bool match (Term &term){
