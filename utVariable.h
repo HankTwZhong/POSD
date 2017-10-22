@@ -30,7 +30,9 @@ TEST (Variable , haveValue){
 TEST(Variable , numE_to_varX){
   Number num_2p7182 (2.7182);
   Variable X ("X") ;
-  X.match(num_2p7182);
+  // X.match(num_2p7182);
+  num_2p7182.match(X);
+  
   EXPECT_EQ("2.7182",X.value());   
   
 }
@@ -146,8 +148,8 @@ TEST (Variable, Struct2) {
   Atom teddy("teddy");
   std::vector<Term*> v = {&X};
   Struct s (Atom("s"),v);  
-  X.match(teddy);
   Y.match(s);
+  X.match(teddy);
   EXPECT_EQ("Y",(Y.symbol()));
   EXPECT_EQ("s(teddy)",(Y.value()));  
 }

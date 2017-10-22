@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include "atom.h"
-#include "variable.h"
 
 using std::string;
 class Struct:public Term
@@ -14,6 +13,9 @@ public:
     
     Term * args (int index){
         return _args[index];
+    }
+    int Max(){
+        return _args.size();
     }
     Atom const & name (){
         return _name;

@@ -3,7 +3,7 @@
 
 #include <string>
 using std::string;
-
+class Variable;
 
 class Term{
 
@@ -11,13 +11,8 @@ public:
   virtual string symbol() const= 0;
 
   virtual string value () const=0;
-  // virtual string value() const{
-  //   return symbol();
-  // };
 
-  virtual bool match(Term & term) {
-    return symbol() == term.symbol();
-  }
+  virtual bool match(Term & term);
 
 
 };
@@ -34,6 +29,7 @@ public:
   }
 private:
   string _symbol;
+  
 };
 
 #endif
