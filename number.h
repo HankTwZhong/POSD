@@ -2,24 +2,13 @@
 #define NUMBER_H
 
 #include <string>
+#include <sstream>
+#include "term.h"
 using std::string;
-#include "atom.h"
-#include<sstream>
 
 class Number : public Term{
 public:
-  Number (double s) {
-    std::ostringstream doubleConvertsStr;
-    doubleConvertsStr << s;
-    _symbol = doubleConvertsStr.str();
-  }
-  string symbol() const{
-    return _symbol;
-  }
-  string value() const {
-    return symbol();
-  }
-private:
-  string _symbol;
+  Number(double db):Term(db) {}
 };
+
 #endif
