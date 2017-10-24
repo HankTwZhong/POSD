@@ -2,6 +2,7 @@
 #define VARIABLE_H
 
 #include <string>
+#include <iostream>
 #include "term.h"
 using std::string;
 
@@ -17,7 +18,7 @@ public:
   bool match( Term & term ){
     if (this == &term)
       return true;
-    if(!_inst){
+    if(!_inst){      
       _inst = &term ;
       return true;
     }

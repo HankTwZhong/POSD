@@ -86,42 +86,85 @@ TEST(List, matchToStructShouldFail) {
   EXPECT_FALSE(s.match(l));  
 }
 
-// // ?- Y = [496, X, terence_tao].
-// // Y = [496, X, terence_tao].
-// TEST(List, matchToVarShouldSucceed) {
+// ?- Y = [496, X, terence_tao].
+// Y = [496, X, terence_tao].
+TEST(List, matchToVarShouldSucceed) {
+  Variable X("X") ,Y("Y");
+  Number n_496(496) ;
+  Atom terence_tao("terence_tao");  
+  vector<Term * > list_arg = { &n_496 , &X , &terence_tao };
+  List l(list_arg) ;
+  EXPECT_TRUE(Y.match(l));
+  EXPECT_EQ("[496,X,terence_tao]" , Y.value());  
+}
 
-// }
+// ?- X = [496, X, terence_tao].
+// false.
+TEST(List, matchToVarOccuredInListShouldFail) {
+  // Variable X ("X");
+  // Number n_496(496) ;
+  // Atom terence_tao("terence_tao");  
+  // vector<Term * > list_arg = { &n_496 , &X , &terence_tao };
+  // List l(list_arg) ;
+  // X.match(l);
+  // EXPECT_EQ("[496,X,terence_tao]" , X.value());
+  
+}
 
-// // ?- X = [496, X, terence_tao].
-// // false.
-// TEST(List, matchToVarOccuredInListShouldFail) {
+// ?- [496, X, terence_tao] = [496, X, terence_tao].
+// true.
+TEST(List, matchToSameListShouldSucceed) {
+  Variable X ("X");
+  Number n_496(496) ;
+  Atom terence_tao("terence_tao");  
+  vector<Term * > list_arg = { &n_496 , &X , &terence_tao };
+  List l (list_arg);
+  List l2 (list_arg);  
+  EXPECT_TRUE(l.match(l2));
+}
 
-// }
+// ?- [496, X, terence_tao] = [496, Y, terence_tao].
+// true.
+TEST(List, matchToSameListWithDiffVarNameShouldSucceed) {
+  Variable X ("X"),Y("Y");
+  Number n_496(496) ;
+  Atom terence_tao("terence_tao");  
+  vector<Term * > list_arg = { &n_496 , &X , &terence_tao };
+  vector<Term * > list_arg2 = { &n_496 , &Y , &terence_tao };  
+  List l (list_arg);
+  List l2 (list_arg2);  
+  EXPECT_TRUE(l.match(l2));
+}
 
-// // ?- [496, X, terence_tao] = [496, X, terence_tao].
-// // true.
-// TEST(List, matchToSameListShouldSucceed) {
+// ?- [496, X, terence_tao] = [496, 8128, terence_tao].
+// X = 8128.
+TEST(List, matchToVarToAtominListShouldSucceed) {
+  Variable X ("X");
+  Number n_496(496) ,n_8128(8128);
+  Atom terence_tao("terence_tao");  
+  vector<Term * > list_arg = { &n_496 , &X , &terence_tao };
+  vector<Term * > list_arg2 = { &n_496 , &n_8128 , &terence_tao };  
+  List l (list_arg);
+  List l2 (list_arg2);  
+  EXPECT_TRUE(l.match(l2));
+  EXPECT_EQ("8128",X.value());
+}
 
-// }
+// ?- Y = [496, X, terence_tao], X = alan_mathison_turing.
+// Y = [496, alan_mathison_turing, terence_tao],
+// X = alan_mathison_turing.
+TEST(List, matchVarinListToAtomShouldSucceed) {
+  Variable X ("X"),Y("Y");
+  Number n_496(496);
+  Atom terence_tao("terence_tao"),alan_mathison_turing("alan_mathison_turing");  
+  vector<Term * > list_arg = { &n_496 , &X  , &terence_tao   };
+  X.match(alan_mathison_turing);
+  List l (list_arg);
+  Y.match(l);
+  EXPECT_EQ("[496,alan_mathison_turing,terence_tao]",Y.value());  
+  EXPECT_EQ("alan_mathison_turing",X.value());
 
-// // ?- [496, X, terence_tao] = [496, Y, terence_tao].
-// // true.
-// TEST(List, matchToSameListWithDiffVarNameShouldSucceed) {
-
-// }
-
-// // ?- [496, X, terence_tao] = [496, 8128, terence_tao].
-// // X = 8128.
-// TEST(List, matchToVarToAtominListShouldSucceed) {
-
-// }
-
-// // ?- Y = [496, X, terence_tao], X = alan_mathison_turing.
-// // Y = [496, alan_mathison_turing, terence_tao],
-// // X = alan_mathison_turing.
-// TEST(List, matchVarinListToAtomShouldSucceed) {
-
-// }
+}
 
 // // Example: 
 // // ?- [first, second, third] = [H|T].
