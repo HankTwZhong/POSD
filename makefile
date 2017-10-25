@@ -1,5 +1,11 @@
 all: hw4
 hw4: mainList.o term.o
+ifeq (${OS}, Windows_NT)
+	g++ -o hw4 mainList.o term.o -lgtest 
+else 
+	g++ -o hw4 mainList.o term.o -lgtest -lpthread
+endif
+
 utAtom: mainAtom.o atom.o
 	g++ -o utAtom mainAtom.o atom.o -lgtest -lpthread
 mainAtom.o: mainAtom.cpp utAtom.h atom.h utStruct.h struct.h
