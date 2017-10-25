@@ -28,6 +28,6 @@ utList: mainList.o term.o
 mainList.o: mainList.cpp utList.h 
 	g++ -std=gnu++0x  -c mainList.cpp
 clean:
-	rm -f *.o madRace utAtom utVariable utScanner
+	rm -f *.o hw4 utList
 stat:
 	wc *.h *.cpp
