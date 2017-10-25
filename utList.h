@@ -223,7 +223,7 @@ TEST (List, emptyExecptionOfHead) {
     //FAIL() << "Accessing head in an empty list as an exception";    
   }
   catch(string  e){
-    EXPECT_EQ(std::string("Accessing head in an empty list as an exception"),e);
+    EXPECT_EQ("Accessing head in an empty list",e);
   }
 }
 
@@ -237,7 +237,7 @@ TEST (List, emptyExecptionOfTail) {
     //FAIL() << "Accessing head in an empty list as an exception";    
   }
   catch(string  e){
-    EXPECT_EQ(std::string("Accessing head in an empty list as an exception"),e);
+    EXPECT_EQ("Accessing tail in an empty list",e);
   }
 }
 

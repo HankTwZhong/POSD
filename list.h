@@ -79,13 +79,13 @@ public:
   List (vector<Term *> const & elements):_elements(elements){}
   Term * head() const{
     if(_elements.empty())
-      throw std::string("Accessing head in an empty list as an exception");
+      throw std::string("Accessing head in an empty list");
     
     return _elements[0];    
   }
   List * tail() const {
     if(_elements.empty())
-      throw std::string("Accessing head in an empty list as an exception");
+      throw std::string("Accessing tail in an empty list");
     vector<Term *> _clone_elements;
     _clone_elements.assign(_elements.begin()+1, _elements.end());     
     List *ls= new List(_clone_elements) ;
