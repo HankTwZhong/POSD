@@ -54,20 +54,15 @@ public:
         for(int i = 0 ; i < _elements.size() ;i++ ){
             ret = _elements[i]->match(*(ptrls->_elements[i])) ;
             if(ret == false)
-              return ret;          
+              return ret;       
         }    
       }
       return ret;
     }
-    else if(typeid(term) == typeid(Variable)){
-      std::cout << "list_variable_finish" << std::endl;
-      
+    else if(typeid(term) == typeid(Variable)){      
       bool ret =true;            
       for(int i = 0 ; i < _elements.size() ;i++ ){
         if(typeid(_elements[i]) ==  typeid(Variable))
-          // if( _elements[i]->symbol() == term.symbol())
-          //   return false ;
-          // else
           ret = _elements[i]->match(term) ;
           if(ret == false)
              return ret;          
@@ -84,7 +79,7 @@ public:
   List (vector<Term *> const & elements):_elements(elements){}
   Term * head() const{
     if(_elements.empty()){
-      throw string("Accessing head in an empty list as an exception");
+      throw std::string("Accessing head in an empty list as an exception");
       // return 0;
     }
     else{
@@ -93,7 +88,7 @@ public:
   }
   List * tail() const {
     if(_elements.empty()){
-      throw string("Accessing head in an empty list as an exception");
+      throw std::string("Accessing head in an empty list as an exception");
       // return 0;
     }
     else{
