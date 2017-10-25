@@ -20,7 +20,7 @@ public:
       ret  = "[";
       std::vector<Term *>::const_iterator it = _elements.begin();
       for( ; it != _elements.end()-1 ; ++it ){
-        ret += (*it)->symbol()+",";
+        ret += (*it)->symbol()+", ";
       }
       ret += (*it)->symbol()+"]";
     }
@@ -28,15 +28,14 @@ public:
   }
   string value() const{
     string ret ;
-    if(_elements.size()==0 ){
+    if(_elements.empty()){
       ret = "[]";
     }
     else{
-      // std::cout << "跑回圈" << std::endl;
       ret  = "[";
       std::vector<Term *>::const_iterator it = _elements.begin();
       for( ; it != _elements.end()-1 ; ++it ){
-        ret += (*it)->value()+",";
+        ret += (*it)->value()+", ";
       }
       ret += (*it)->value()+"]";
     }

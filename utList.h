@@ -13,8 +13,8 @@ using std::string;
 // When create a new list without any item
 // Then #symbol() of the list should return "[]"
 TEST (List, constructor) {
-  List *l = new List();
-  EXPECT_EQ( "[]" , l->symbol()) ;  
+  List l ;
+  EXPECT_EQ( "[]" , l.value()) ;  
 }
 
 // Given there are two perfect Numbers: 8128, 496
@@ -24,7 +24,7 @@ TEST(List, Numbers) {
   Number n_496(496),n_8128(8128);
   vector <Term*> args = {&n_496,&n_8128};
   List l (args);
-  EXPECT_EQ( "[496,8128]" , l.symbol()) ;  
+  EXPECT_EQ(string("[496, 8128]") , l.value()) ;  
   
 }
 
@@ -35,7 +35,7 @@ TEST(List, Atoms) {
   Atom terence_tao("terence_tao") , alan_mathison_turing("alan_mathison_turing");
   vector <Term*> args = {&terence_tao , &alan_mathison_turing};
   List l (args);
-  EXPECT_EQ("[terence_tao,alan_mathison_turing]" , l.symbol());
+  EXPECT_EQ("[terence_tao, alan_mathison_turing]" , l.value());
 }
 
 // Given there are two variables: X, Y
@@ -45,7 +45,7 @@ TEST(List, Vars) {
   Variable X("X") , Y("Y");
   vector <Term*> args = {&X , &Y};
   List l (args);
-  EXPECT_EQ("[X,Y]" , l.symbol());
+  EXPECT_EQ("[X, Y]" , l.value());
 }
 
 // ?- tom = [496, X, terence_tao].
@@ -95,7 +95,7 @@ TEST(List, matchToVarShouldSucceed) {
   vector<Term * > list_arg = { &n_496 , &X , &terence_tao };
   List l(list_arg) ;
   EXPECT_TRUE(Y.match(l));
-  EXPECT_EQ("[496,X,terence_tao]" , Y.value());  
+  EXPECT_EQ("[496, X, terence_tao]" , Y.value());  
 }
 
 // ?- X = [496, X, terence_tao].
@@ -161,7 +161,7 @@ TEST(List, matchVarinListToAtomShouldSucceed) {
   X.match(alan_mathison_turing);
   List l (list_arg);
   Y.match(l);
-  EXPECT_EQ("[496,alan_mathison_turing,terence_tao]",Y.value());  
+  EXPECT_EQ("[496, alan_mathison_turing, terence_tao]",Y.value());  
   EXPECT_EQ("alan_mathison_turing",X.value());
 
 }
@@ -174,7 +174,7 @@ TEST(List, headAndTailMatching1) {
   vector<Term *> args = {&f, &s, &t};
   List l(args);
   EXPECT_EQ("first", l.head()->symbol());
-  EXPECT_EQ("[second,third]", l.tail()->value());
+  EXPECT_EQ("[second, third]", l.tail()->value());
 }
 
 // Example:
@@ -199,7 +199,7 @@ TEST(List, headAndTailMatching3) {
   List l2(args_rest);
   
   EXPECT_EQ("[first]", l2.head()->value());
-  EXPECT_EQ("[second,third]", l2.tail()->value());
+  EXPECT_EQ("[second, third]", l2.tail()->value());
 
 }
 
