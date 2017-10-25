@@ -66,8 +66,11 @@ public:
       bool ret =true;            
       for(int i = 0 ; i < _elements.size() ;i++ ){
         if(typeid(_elements[i]) ==  typeid(Variable))
-           ret = _elements[i]->match(term) ;
-           if(ret == false)
+          // if( _elements[i]->symbol() == term.symbol())
+          //   return false ;
+          // else
+          ret = _elements[i]->match(term) ;
+          if(ret == false)
              return ret;          
       }    
       return ret;      
@@ -78,15 +81,27 @@ public:
     }   
   }
 public:
-  List (): _elements() {}
+  List (): _elements(0) {}
   List (vector<Term *> const & elements):_elements(elements){}
-  // Term * head() const{
-  //   return _elements[0];
-  // }
-  // List * tail() const 
-  //   List *ls= new List() ;
-  //   return this;
-  // }
+  Term * head() const{
+    try{
+      if(_elements.size() ==  0)
+        throw "Accessing head in an empty list as an exception";
+      else
+      return _elements[0];
+      
+    }
+    catch(  vector<Term *> ){
+      throw "Accessing head in an empty list as an exception";
+    }
+
+  }
+  List * tail() const {
+    vector<Term *> _clone_elements;
+    _clone_elements.assign(_elements.begin()+1, _elements.end());     
+    List *ls= new List(_clone_elements) ;
+    return ls;
+  }
 
 private:
   vector<Term *> _elements;

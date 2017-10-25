@@ -13,8 +13,8 @@ using std::string;
 // When create a new list without any item
 // Then #symbol() of the list should return "[]"
 TEST (List, constructor) {
-  List l;
-  EXPECT_EQ( "[]" , l.symbol()) ;  
+  List *l = new List();
+  EXPECT_EQ( "[]" , l->symbol()) ;  
 }
 
 // Given there are two perfect Numbers: 8128, 496
@@ -157,7 +157,7 @@ TEST(List, matchVarinListToAtomShouldSucceed) {
   Variable X ("X"),Y("Y");
   Number n_496(496);
   Atom terence_tao("terence_tao"),alan_mathison_turing("alan_mathison_turing");  
-  vector<Term * > list_arg = { &n_496 , &X  , &terence_tao   };
+  vector<Term * > list_arg = { &n_496 , &X, &terence_tao   };
   X.match(alan_mathison_turing);
   List l (list_arg);
   Y.match(l);
@@ -166,55 +166,68 @@ TEST(List, matchVarinListToAtomShouldSucceed) {
 
 }
 
-// // Example: 
-// // ?- [first, second, third] = [H|T].
-// // H = first, T = [second, third].
-// TEST(List, headAndTailMatching1) {
-//   Atom f("first"), s("second"), t("third");
-//   vector<Term *> args = {&f, &s, &t};
-//   List l(args);
+// Example: 
+// ?- [first, second, third] = [H|T].
+// H = first, T = [second, third].
+TEST(List, headAndTailMatching1) {
+  Atom f("first"), s("second"), t("third");
+  vector<Term *> args = {&f, &s, &t};
+  List l(args);
+  EXPECT_EQ("first", l.head()->symbol());
+  EXPECT_EQ("[second,third]", l.tail()->value());
+}
 
-//   EXPECT_EQ(string("first"), l.head()->symbol());
-//   EXPECT_EQ(string("[second, third]"), l.tail()->value());
-// }
+// Example:
+// ?- [first, second, third] = [first, H|T].
+// H = second, T = [third].
+TEST(List, headAndTailMatching2) {
+  Atom f("first"), s("second"), t("third");
+  vector<Term *> args = {&f, &s, &t};
+  List l(args);
 
-// // Example:
-// // ?- [first, second, third] = [first, H|T].
-// // H = second, T = [third].
-// TEST(List, headAndTailMatching2) {
-//   Atom f("first"), s("second"), t("third");
-//   vector<Term *> args = {&f, &s, &t};
-//   List l(args);
+  EXPECT_EQ(string("second"), l.tail()->head()->value());
+  EXPECT_EQ(string("[third]"), l.tail()->tail()->value());
+}
 
-//   EXPECT_EQ(string("second"), l.tail()->head()->value());
-//   EXPECT_EQ(string("[third]"), l.tail()->tail()->value());
-// }
+// ?- [[first], second, third] = [H|T].
+// H = [first], T = [second, third].
+TEST(List, headAndTailMatching3) {
+  Atom f("first"), s("second"), t("third");
+  vector<Term *> args_fir = {&f};  
+  List l(args_fir);
+  vector<Term *> args_rest = {&l, &s, &t};
+  List l2(args_rest);
+  
+  EXPECT_EQ("[first]", l2.head()->value());
+  EXPECT_EQ("[second,third]", l2.tail()->value());
 
-// // ?- [[first], second, third] = [H|T].
-// // H = [first], T = [second, third].
-// TEST(List, headAndTailMatching3) {
+}
 
-// }
-
-// // ?- [first, second, third] = [first, second, H|T].
-// // H = third, T = [].
-// TEST(List, headAndTailMatching4) {
-
-// }
+// ?- [first, second, third] = [first, second, H|T].
+// H = third, T = [].
+TEST(List, headAndTailMatching4) {
+  Atom f("first"), s("second"), t("third");
+  vector<Term *> args = {&f, &s, &t};
+  List l(args);
+  EXPECT_EQ("third", l.tail()->tail()->head()->value());
+  EXPECT_EQ("[]", l.tail()->tail()->tail()->value());  
+}
  
-// // Given there is a empty list
-// // When client still want to get the head of list
-// // Then it should throw a string: "Accessing head in an empty list" as an exception.
-// TEST (List, emptyExecptionOfHead) {
+// Given there is a empty list
+// When client still want to get the head of list
+// Then it should throw a string: "Accessing head in an empty list" as an exception.
+TEST (List, emptyExecptionOfHead) {
+  List l;
+  // l.head();
+  EXPECT_EQ("Accessing head in an empty list as an exception" , l.head());
+}
 
-// }
+// Given there is a empty list
+// When client still want to get the head of list
+// Then it should throw a string: "Accessing tail in an empty list" as an exception.
+TEST (List, emptyExecptionOfTail) {
 
-// // Given there is a empty list
-// // When client still want to get the head of list
-// // Then it should throw a string: "Accessing tail in an empty list" as an exception.
-// TEST (List, emptyExecptionOfTail) {
-
-// }
+}
 
 
 

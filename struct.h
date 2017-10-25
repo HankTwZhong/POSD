@@ -3,6 +3,7 @@
 
 #include "term.h"
 #include "atom.h"
+#include "number.h"
 #include <vector>
 #include <string>
 
