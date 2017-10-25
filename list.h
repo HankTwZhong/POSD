@@ -78,25 +78,19 @@ public:
   List (): _elements(0) {}
   List (vector<Term *> const & elements):_elements(elements){}
   Term * head() const{
-    if(_elements.empty()){
+    if(_elements.empty())
       throw std::string("Accessing head in an empty list as an exception");
-      // return 0;
-    }
-    else{
-      return _elements[0];
-    }
+    
+    return _elements[0];    
   }
   List * tail() const {
-    if(_elements.empty()){
+    if(_elements.empty())
       throw std::string("Accessing head in an empty list as an exception");
-      // return 0;
-    }
-    else{
-      vector<Term *> _clone_elements;
-      _clone_elements.assign(_elements.begin()+1, _elements.end());     
-      List *ls= new List(_clone_elements) ;
-      return ls;
-    }
+    vector<Term *> _clone_elements;
+    _clone_elements.assign(_elements.begin()+1, _elements.end());     
+    List *ls= new List(_clone_elements) ;
+    return ls;
+
 
   }
 
