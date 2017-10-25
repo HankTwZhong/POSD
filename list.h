@@ -85,7 +85,7 @@ public:
   Term * head() const{
     if(_elements.empty()){
       throw string("Accessing head in an empty list as an exception");
-      return 0;
+      // return 0;
     }
     else{
       return _elements[0];
@@ -94,7 +94,7 @@ public:
   List * tail() const {
     if(_elements.empty()){
       throw string("Accessing head in an empty list as an exception");
-      return 0;
+      // return 0;
     }
     else{
       vector<Term *> _clone_elements;
