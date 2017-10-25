@@ -84,23 +84,26 @@ public:
   List (): _elements(0) {}
   List (vector<Term *> const & elements):_elements(elements){}
   Term * head() const{
-    try{
-      if(_elements.size() ==  0)
-        throw "Accessing head in an empty list as an exception";
-      else
+    if(_elements.empty()){
+      throw string("Accessing head in an empty list as an exception");
+      return 0;
+    }
+    else{
       return _elements[0];
-      
     }
-    catch(  vector<Term *> ){
-      throw "Accessing head in an empty list as an exception";
-    }
-
   }
   List * tail() const {
-    vector<Term *> _clone_elements;
-    _clone_elements.assign(_elements.begin()+1, _elements.end());     
-    List *ls= new List(_clone_elements) ;
-    return ls;
+    if(_elements.empty()){
+      throw string("Accessing head in an empty list as an exception");
+      return 0;
+    }
+    else{
+      vector<Term *> _clone_elements;
+      _clone_elements.assign(_elements.begin()+1, _elements.end());     
+      List *ls= new List(_clone_elements) ;
+      return ls;
+    }
+
   }
 
 private:
