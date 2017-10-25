@@ -2,8 +2,10 @@
 #define VARIABLE_H
 
 #include <string>
-#include <iostream>
 #include "term.h"
+#include "list.h"
+#include <typeinfo>
+
 using std::string;
 
 class Variable : public Term {
@@ -16,11 +18,23 @@ public:
       return Term::value();
   }
   bool match( Term & term ){
+    bool ret = true;
     if (this == &term)
-      return true;
+      return ret;
     if(!_inst){      
+      if (typeid(term) ==  typeid(List)){
+        List * ls= dynamic_cast<List*>(&term);
+         std::cout << "Variable_List:"+ls->symbol()<< std::endl;
+         ret =  ls->match(*this);
+        //  if(ret == false)
+        //  return ret;
+        // else{
+          _inst = &term ;
+          return ret;
+        // }
+      }
       _inst = &term ;
-      return true;
+      return ret;
     }
     return _inst->match(term);
   }
