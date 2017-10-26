@@ -26,12 +26,8 @@ public:
         List * ls= dynamic_cast<List*>(&term);
          std::cout << "Variable_List:"+ls->symbol()<< std::endl;
          ret =  ls->match(*this);
-        //  if(ret == false)
-        //  return ret;
-        // else{
-          _inst = &term ;
-          return ret;
-        // }
+        _inst = &term ;
+        return ret;
       }
       _inst = &term ;
       return ret;

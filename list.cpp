@@ -2,6 +2,7 @@
 #include "variable.h"
 #include <typeinfo>
 #include <iostream>
+#include <string>
 using std::vector;
 
 string List::symbol() const{
@@ -51,22 +52,15 @@ bool List::match(Term & term) {
         return ret;
     }
     else if(typeid(term) == typeid(Variable)){      
-        bool ret =true;            
-        
-        for(int i = 0 ; i < _elements.size() ;i++ ){
-        std::cout << "do it" << std::endl;            
-        if(_elements[i]->symbol() ==  term.symbol()){
-            std::cout << _elements[i]->symbol() << std::endl ;
-            std::cout << term.symbol() << std::endl;
-            
-            // if( _elements[i]->symbol() == term.symbol() ){
-                std::cout << term.symbol() << std::endl;
+        bool ret =true;                    
+        for(int i = 0 ; i < _elements.size() ;i++ ){         
+        if(_elements[i]->symbol() ==  term.symbol()){            
+            if( _elements[i]->symbol() == term.symbol() ){
                 ret= false;
                 return ret;
-            // }
-            ret = _elements[i]->match(term) ;    
-        }
-        
+            }
+        ret = _elements[i]->match(term) ;    
+        }        
         if(ret == false)
                 return ret;          
         }    
