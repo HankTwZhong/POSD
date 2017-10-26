@@ -53,14 +53,14 @@ bool List::match(Term & term) {
     }
     else if(typeid(term) == typeid(Variable)){      
         bool ret =true;                    
-        for(int i = 0 ; i < _elements.size() ;i++ ){         
-        if(_elements[i]->symbol() ==  term.symbol()){            
+        for(int i = 0 ; i < _elements.size() ;i++ ){       
             if( _elements[i]->symbol() == term.symbol() ){
                 ret= false;
                 return ret;
             }
-        ret = _elements[i]->match(term) ;    
-        }        
+            if(typeid(*_elements[i])  == typeid(Variable)){
+                ret = term.match(*_elements[i]);
+            }                 
         if(ret == false)
                 return ret;          
         }    
