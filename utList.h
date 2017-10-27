@@ -237,7 +237,7 @@ TEST(List, headAndTailMatching4) {
   EXPECT_EQ("[]", l.tail()->tail()->tail()->value());  
 
 }
- 
+ //
 // Given there is a empty list
 // When client still want to get the head of list
 // Then it should throw a string: "Accessing head in an empty list" as an exception.
