@@ -23,7 +23,7 @@ public:
       return new Variable(symtable[_scanner.tokenValue()].first);
     }else if(token == NUMBER){
       return new Number(_scanner.tokenValue());
-    }else if(token == ATOM){
+    }else if(token == ATOM || token == ATOMSC){
         Atom* atom = new Atom(symtable[_scanner.tokenValue()].first);
         vector <Term*> Struct_Param ={};
         if(_scanner.currentChar() == '(') {
@@ -35,19 +35,21 @@ public:
         else
           return atom;
     }
-    else if (token == '[') {
-      
+    else if (token == '[') {      
       vector<Term*> List_Parm;
-
+      _scanner.skipLeadingWhiteSpace();      
       if(_scanner.currentChar() == ']'){
-
-        while(_scanner.buffersize() > _scanner.position() && _scanner.currentChar() != ')'){             
-          // NextParse = createTerm();
-  
-        } 
+        _scanner.nextToken();
+        return new List;
       }
-      else               
-        return new List ;
+      else{              
+        List_Parm = getArgs();     
+        if (_currentToken == ')' ){
+          throw string ("unexpected token");        
+        }   
+        return new List(List_Parm);
+      }
+        
     }
     return nullptr;
   }

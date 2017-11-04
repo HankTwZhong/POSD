@@ -16,6 +16,9 @@ public:
   Term * args(int index) {
     return _args[index];
   }
+  int arity(){
+    return _args.size();
+  }
 
   Atom & name() {
     return _name;
