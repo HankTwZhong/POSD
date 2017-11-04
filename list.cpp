@@ -21,17 +21,17 @@ string List::symbol() const{
     return ret;
   }
 string List::value() const{
-string ret ;
-if(_elements.empty()){
-    ret = "[]";
-}
-else{
-    ret  = "[";
-    std::vector<Term *>::const_iterator it = _elements.begin();
-    for( ; it != _elements.end()-1 ; ++it ){
-    ret += (*it)->value()+", ";
+    string ret ;
+    if(_elements.empty()){
+        ret = "[]";
     }
-    ret += (*it)->value()+"]";
+    else{
+        ret  = "[";
+        std::vector<Term *>::const_iterator it = _elements.begin();
+        for( ; it != _elements.end()-1 ; ++it ){
+        ret += (*it)->value()+", ";
+        }
+        ret += (*it)->value()+"]";
 }
 return ret;
 }

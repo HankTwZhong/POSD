@@ -1,9 +1,7 @@
 #ifndef STRUCT_H
 #define STRUCT_H
 
-#include "term.h"
 #include "atom.h"
-#include "number.h"
 #include <vector>
 #include <string>
 
@@ -23,6 +21,9 @@ public:
     return _name;
   }
   string symbol() const {
+    if(_args.empty()){
+      return _name.symbol() + "()";
+    }
     string ret = _name.symbol() + "(";
     std::vector<Term *>::const_iterator it = _args.begin();
     for (; it != _args.end()-1; ++it)

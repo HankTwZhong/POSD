@@ -20,7 +20,7 @@ public:
       else if (isdigit(currentChar())) {
         _tokenValue = extractNumber();
         return NUMBER;
-      }  else if (islower(currentChar())) {
+      }  else if (islower(currentChar()) ) {
         string s = extractAtom();
         processToken<ATOM>(s);
         return ATOM;
@@ -47,6 +47,9 @@ public:
 
   int position() const {return pos;}
 
+  int buffersize() {
+    return buffer.size();
+  }
   char currentChar() {
     return buffer[pos];
   }
