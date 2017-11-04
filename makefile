@@ -25,11 +25,11 @@ mainList.o: mainList.cpp utList.h
 utScanner: mainScanner.o  term.o 
 	g++ -o utScanner mainScanner.o term.o -lgtest -lpthread
 mainScanner.o: mainScanner.cpp utScanner.h 
-		g++ -std=c++11 -c mainScanner.cpp
+		g++ -std=gnu++0x -c mainScanner.cpp
 utParser: mainParser.o  term.o list.o
 	g++ -o utParser mainParser.o term.o list.o -lgtest -lpthread
 mainParser.o: mainParser.cpp utParser.h
-		g++ -std=c++11 -c mainParser.cpp
+		g++ -std=gnu++0x -c mainParser.cpp
 
 
 clean:
