@@ -66,7 +66,7 @@ TEST_F(ParserTest, listOfTermsTwo) {
 }
 
 
-// empty my test
+// empty lesson test 
 TEST_F(ParserTest, emptyScanner) {
   
     Scanner scanner("s()");  
