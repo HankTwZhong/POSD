@@ -1,4 +1,5 @@
 #include "term.h"
+#include "list.h"
 #include "variable.h"
 #include <typeinfo>
 #include <iostream>
