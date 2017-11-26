@@ -1,5 +1,5 @@
-all: hw5
-hw5: mainParser.o term.o list.o
+all: hw6
+hw6: mainParser.o term.o list.o
 ifeq (${OS}, Windows_NT)
 	g++ -o hw5 mainParser.o term.o list.o  -lgtest 
 else 
@@ -24,11 +24,13 @@ mainList.o: mainList.cpp utList.h
 	g++ -std=gnu++0x  -c mainList.cpp
 utScanner: mainScanner.o  term.o 
 	g++ -o utScanner mainScanner.o term.o -lgtest -lpthread
-mainScanner.o: mainScanner.cpp utScanner.h 
-		g++ -std=gnu++0x -c mainScanner.cpp
-utParser: mainParser.o  term.o list.o
+# mainScanner.o: mainScanner.cpp utScanner.h 
+# 		g++ -std=gnu++0x -c mainScanner.cpp
+mainScanner.o: mainScanner.cpp TestScanner.h 
+	g++ -std=gnu++0x -c mainScanner.cpp
+utParser: mainParser.o  term.o list.o 
 	g++ -o utParser mainParser.o term.o list.o -lgtest -lpthread
-mainParser.o: mainParser.cpp utParser.h
+mainParser.o: mainParser.cpp utParser.h node.h
 		g++ -std=gnu++0x -c mainParser.cpp
 
 

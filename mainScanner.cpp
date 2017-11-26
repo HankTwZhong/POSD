@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include "utScanner.h"
+// #include "utScanner.h"
+#include "TestScanner.h"
 int main( int argc , char **argv )
 {
     testing :: InitGoogleTest( &argc , argv ) ;

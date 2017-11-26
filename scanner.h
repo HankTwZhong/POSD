@@ -13,7 +13,27 @@ class Scanner {
 public:
   Scanner (string in=""):buffer(in), pos(0), _tokenValue(NONE){}
   void setInput(string in) {buffer = in;}
-
+  string convertoString(){
+    string result;
+    while(nextToken()){
+      if( _tokenValue == NUMBER){
+        result += std::to_string(_tokenValue);
+      }
+      if(_tokenValue == ','){
+        result += ",";
+      }
+      else if (_tokenValue == (int)';'){
+        result += ";";
+      }
+      else if (_tokenValue== (int)'='){
+        result += "=";
+      }
+      else{
+        result +=  symtable[_tokenValue].first;
+      }
+      return result;
+    }
+  }
   int nextToken() {
       if (skipLeadingWhiteSpace() >= buffer.length())
         return EOS;
@@ -80,6 +100,15 @@ public:
   }
 
   char extractChar() {
+    if(buffer[pos] == ','){
+      _tokenValue = (int)','; 
+    }
+    else if (buffer[pos] == ';'){
+      _tokenValue = (int)';'; 
+    }
+    else if (buffer[pos] == '='){
+      _tokenValue = (int)'='; 
+    }
     return buffer[pos++];
   }
 
