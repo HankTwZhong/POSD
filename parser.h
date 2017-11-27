@@ -127,7 +127,7 @@ public:
       if(_operation[i] == ',' || _operation[i] == ';' ){
         _nodeofOperation[i]->setchild(_nodeofOperation[i-1],_nodeofOperation[i+1]);
         for(int j = i+1 ; j<_operation.size()  ; j++){
-          if(_operation[j]==','  || _operation[i] == ';'){
+          if(_operation[j]==','  || _operation[j] == ';'){
             _nodeofOperation[i]->setchild(_nodeofOperation[i-1],_nodeofOperation[j]);
             break;
           }
@@ -144,16 +144,21 @@ public:
     std::cout << "recursive_inorder:"+ std::to_string(blockofVariableAndStruct.size()) <<std::endl;    
     for(int i = 0 ; i<blockofVariableAndStruct.size(); i++){
       for(int j=0 ; j<blockofVariableAndStruct.size() ; j++){
+
+        // Struct* transStruct = dynamic_cast<Struct*>(blockofVariableAndStruct[j]);
+        // Variable* variableofparmStruct ;
+        // if(transStruct){          
+        //   for(int z = 0  ; z < transStruct->arity() ; z++){         
+        //     if (variableofparmStruct = dynamic_cast<Variable*>(transStruct->args(z))) {
+        //       if(variableofparmStruct->symbol() == blockofVariableAndStruct->symbol()){
+        //         variableofparmStruct->match(*blockofVariableAndStruct) ;
+        //       }
+        //     }
+        //   }
+        // }
         Struct* transStruct = dynamic_cast<Struct*>(blockofVariableAndStruct[j]);
-        Variable* variableofparmStruct ;
-        if(transStruct){          
-          for(int z = 0  ; z < transStruct->arity() ; z++){         
-            if (variableofparmStruct = dynamic_cast<Variable*>(transStruct->args(z))) {
-              if(variableofparmStruct->symbol() == blockofVariableAndStruct[i]->symbol()){
-                variableofparmStruct->match(*blockofVariableAndStruct[i]) ;
-              }
-            }
-          }
+        if(transStruct && i != j){
+          matchVariabletoNestedStruct(transStruct ,blockofVariableAndStruct[i] );
         }
         if(blockofVariableAndStruct[i]->symbol() == blockofVariableAndStruct[j]->symbol() && i != j){
           std::cout << "left_ele:"+blockofVariableAndStruct[i]->symbol() + "\t right_ele:" +blockofVariableAndStruct[j]->symbol() <<std::endl;          
@@ -165,8 +170,23 @@ public:
     std::cout <<"done" <<std::endl;
     
   }
-  void matchVariabletoNestedStruct(Struct* nestedSStruct){
-
+  void matchVariabletoNestedStruct(Struct* parm_Struct ,Term*  goalofVariable){
+    Variable* variableofparmStruct ;
+    Struct * nestedofStruct;
+    
+    for(int z = 0  ; z < parm_Struct->arity() ; z++){         
+      std::cout  <<"matchVariabletoNestedStruct\t struct_parm:" +parm_Struct->symbol() <<std::endl;
+      
+      if (variableofparmStruct = dynamic_cast<Variable*>(parm_Struct->args(z))) {
+        if(variableofparmStruct->symbol() == goalofVariable->symbol()){
+          variableofparmStruct->match(*goalofVariable) ;
+        }
+      }
+      else if(nestedofStruct =  dynamic_cast<Struct*>(parm_Struct->args(z)) ){
+        std::cout  <<"nestedofStruct ::" +nestedofStruct->symbol() <<std::endl;
+         matchVariabletoNestedStruct(nestedofStruct,goalofVariable);
+      }
+    }
   }
 
   void recursive_inorder(Node *here , vector<Term*> & v)
@@ -175,7 +195,7 @@ public:
     {
       if(here->left != NULL && here->payload != SEMICOLON)
         recursive_inorder(here->left ,v);
-      if(here->right != NULL && here->payload != SEMICOLON)    
+      if(here->right != NULL  )    
         recursive_inorder(here->right,v);   
       if( here->term != 0 ){
         Variable * varb= dynamic_cast<Variable*>(here->term);

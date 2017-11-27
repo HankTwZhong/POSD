@@ -20,7 +20,9 @@ public:
       return (left->evaluate() && right->evaluate()) ;
     }
     else if(payload == SEMICOLON){
-      return (left->evaluate() || right->evaluate()) ;      
+      bool leftSide = left->evaluate() ;
+      bool rightSide = right->evaluate();
+      return (leftSide || rightSide ) ;      
     }
     else if(payload == EQUALITY){
       std::cout << "evaluate leftSide:"+left->term->symbol()+"\t rightSide:"+right->term->symbol() << std::endl;
