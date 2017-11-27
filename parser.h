@@ -142,31 +142,6 @@ public:
     vector <Term* > blockofVariableAndStruct ;
     recursive_inorder(_tree,blockofVariableAndStruct);
     std::cout << "recursive_inorder:"+ std::to_string(blockofVariableAndStruct.size()) <<std::endl;    
-    for(int i = 0 ; i<blockofVariableAndStruct.size(); i++){
-      for(int j=0 ; j<blockofVariableAndStruct.size() ; j++){
-
-        // Struct* transStruct = dynamic_cast<Struct*>(blockofVariableAndStruct[j]);
-        // Variable* variableofparmStruct ;
-        // if(transStruct){          
-        //   for(int z = 0  ; z < transStruct->arity() ; z++){         
-        //     if (variableofparmStruct = dynamic_cast<Variable*>(transStruct->args(z))) {
-        //       if(variableofparmStruct->symbol() == blockofVariableAndStruct->symbol()){
-        //         variableofparmStruct->match(*blockofVariableAndStruct) ;
-        //       }
-        //     }
-        //   }
-        // }
-        Struct* transStruct = dynamic_cast<Struct*>(blockofVariableAndStruct[j]);
-        if(transStruct && i != j){
-          matchVariabletoNestedStruct(transStruct ,blockofVariableAndStruct[i] );
-        }
-        if(blockofVariableAndStruct[i]->symbol() == blockofVariableAndStruct[j]->symbol() && i != j){
-          std::cout << "left_ele:"+blockofVariableAndStruct[i]->symbol() + "\t right_ele:" +blockofVariableAndStruct[j]->symbol() <<std::endl;          
-          blockofVariableAndStruct[i]->match(*blockofVariableAndStruct[j]);  
-          blockofVariableAndStruct.erase(blockofVariableAndStruct.begin()+ j);      
-        }        
-      }
-    }
     std::cout <<"done" <<std::endl;
     
   }
@@ -193,10 +168,10 @@ public:
   {
     if(here != NULL)
     {
-      if(here->left != NULL && here->payload != SEMICOLON)
+      if(here->left != NULL && here->right != NULL && here->payload != SEMICOLON){
         recursive_inorder(here->left ,v);
-      if(here->right != NULL  )    
-        recursive_inorder(here->right,v);   
+        recursive_inorder(here->right,v);          
+      }       
       if( here->term != 0 ){
         Variable * varb= dynamic_cast<Variable*>(here->term);
         if(varb){ 
@@ -207,6 +182,48 @@ public:
           v.push_back(here->term);                       
         }  
       }
+      for(int i = 0 ; i<v.size() ; i++){
+        for(int j = 0 ; j<v.size() ; j++){
+          Struct* transStruct = dynamic_cast<Struct*>(v[j]);
+          if(transStruct && i != j){
+            matchVariabletoNestedStruct(transStruct ,v[i] );
+          }
+          if(v[i]->symbol() == v[j]->symbol() && i != j){
+            std::cout << "left_ele:"+v[i]->symbol() + "\t right_ele:" +v[j]->symbol() <<std::endl;          
+            v[i]->match(*v[j]);  
+            v.erase(v.begin()+ j);      
+          }        
+        }
+      }
+
+      //下方為Struct的遞迴
+      if(here->left != NULL && here->right != NULL && here->payload == SEMICOLON){
+        recursive_inorderToNodeofSEMICOLON(here ,v );
+        for(int i = 0 ; i<v.size() ; i++){
+          for(int j = 0 ; j<v.size() ; j++){
+            Struct* transStruct = dynamic_cast<Struct*>(v[j]);
+            if(transStruct && i != j){
+              matchVariabletoNestedStruct(transStruct ,v[i] );
+            }
+            if(v[i]->symbol() == v[j]->symbol() && i != j){
+              std::cout << "SEMICOLON left_ele:"+v[i]->symbol() + "\t SEMICOLON right_ele:" +v[j]->symbol() <<std::endl;          
+              v[i]->match(*v[j]);  
+              v.erase(v.begin()+ j);      
+            }        
+          }
+      }
+    }
+  }
+}
+
+  void recursive_inorderToNodeofSEMICOLON(Node *here , vector<Term*> & v){
+    if(here != NULL)
+    {
+      if(here->left != NULL && here->right != NULL && here->payload == SEMICOLON){
+        recursive_inorder(here->left ,v);
+        vector<Term*> v2 = {};
+        recursive_inorder(here->right,v2);          
+      }      
     }
   }
   
