@@ -1,9 +1,9 @@
 all: hw6
 hw6: mainParser.o term.o list.o
 ifeq (${OS}, Windows_NT)
-	g++ -o hw5 mainParser.o term.o list.o  -lgtest 
+	g++ -o hw6 mainParser.o term.o list.o  -lgtest 
 else 
-	g++ -o hw5 mainParser.o term.o list.o  -lgtest -lpthread
+	g++ -o hw6 mainParser.o term.o list.o  -lgtest -lpthread
 endif
 
 utAtom: mainAtom.o atom.o
@@ -35,6 +35,6 @@ mainParser.o: mainParser.cpp utParser.h node.h
 
 
 clean:
-	rm -f *.o  utList utScanner utParser hw5
+	rm -f *.o  utList utScanner utParser hw6
 stat:
 	wc *.h *.cpp
