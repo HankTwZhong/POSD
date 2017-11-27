@@ -92,7 +92,7 @@ public:
 
 
     createTerms(); //抓取term and operation
-    createNode();
+    createNode ();
     createNodeofRealation();
     for (int i =0 ; i< _terms.size() ; i++ )
     {
@@ -121,12 +121,13 @@ public:
     }    
     std::cout << "OperatioN_Size:"+ std::to_string(_operation.size()) <<std::endl;
   }
+
   void createNodeofRealation(){
     for(int i = 0 ; i< _operation.size() ;i++){
-      if(_operation[i] == ','){
+      if(_operation[i] == ',' || _operation[i] == ';' ){
         _nodeofOperation[i]->setchild(_nodeofOperation[i-1],_nodeofOperation[i+1]);
         for(int j = i+1 ; j<_operation.size()  ; j++){
-          if(_operation[j]==','){
+          if(_operation[j]==','  || _operation[i] == ';'){
             _nodeofOperation[i]->setchild(_nodeofOperation[i-1],_nodeofOperation[j]);
             break;
           }
@@ -135,39 +136,54 @@ public:
     }
     setRoot();
     matchingSameVariable();
-
-
   }
 
   void matchingSameVariable(){    
-    vector <Term* > blockofSameVariable ;
-    recursive_inorder(_tree,blockofSameVariable);
-    for(int i = 0 ; i<blockofSameVariable.size(); i++){
-      for(int j=0 ; j<blockofSameVariable.size() ; j++){
-        if(blockofSameVariable[i]->symbol() == blockofSameVariable[j]->symbol() && i != j){
-          std::cout << "left_ele:"+blockofSameVariable[i]->symbol() + "\t right_ele:" +blockofSameVariable[j]->symbol() <<std::endl;          
-          blockofSameVariable[i]->match(*blockofSameVariable[j]);  
-          blockofSameVariable.erase(blockofSameVariable.begin()+ j);      
+    vector <Term* > blockofVariableAndStruct ;
+    recursive_inorder(_tree,blockofVariableAndStruct);
+    std::cout << "recursive_inorder:"+ std::to_string(blockofVariableAndStruct.size()) <<std::endl;    
+    for(int i = 0 ; i<blockofVariableAndStruct.size(); i++){
+      for(int j=0 ; j<blockofVariableAndStruct.size() ; j++){
+        Struct* transStruct = dynamic_cast<Struct*>(blockofVariableAndStruct[j]);
+        Variable* variableofparmStruct ;
+        if(transStruct){          
+          for(int z = 0  ; z < transStruct->arity() ; z++){         
+            if (variableofparmStruct = dynamic_cast<Variable*>(transStruct->args(z))) {
+              if(variableofparmStruct->symbol() == blockofVariableAndStruct[i]->symbol()){
+                variableofparmStruct->match(*blockofVariableAndStruct[i]) ;
+              }
+            }
+          }
+        }
+        if(blockofVariableAndStruct[i]->symbol() == blockofVariableAndStruct[j]->symbol() && i != j){
+          std::cout << "left_ele:"+blockofVariableAndStruct[i]->symbol() + "\t right_ele:" +blockofVariableAndStruct[j]->symbol() <<std::endl;          
+          blockofVariableAndStruct[i]->match(*blockofVariableAndStruct[j]);  
+          blockofVariableAndStruct.erase(blockofVariableAndStruct.begin()+ j);      
         }        
-
       }
     }
     std::cout <<"done" <<std::endl;
     
+  }
+  void matchVariabletoNestedStruct(Struct* nestedSStruct){
+
   }
 
   void recursive_inorder(Node *here , vector<Term*> & v)
   {
     if(here != NULL)
     {
-      if(here->left != NULL)
-         recursive_inorder(here->left ,v);
-      if(here->right != NULL)    
+      if(here->left != NULL && here->payload != SEMICOLON)
+        recursive_inorder(here->left ,v);
+      if(here->right != NULL && here->payload != SEMICOLON)    
         recursive_inorder(here->right,v);   
-
       if( here->term != 0 ){
         Variable * varb= dynamic_cast<Variable*>(here->term);
         if(varb){ 
+          v.push_back(here->term);                       
+        }  
+        Struct * Stru= dynamic_cast<Struct*>(here->term);
+        if(Stru){ 
           v.push_back(here->term);                       
         }  
       }
@@ -180,14 +196,23 @@ public:
   }
   void setRoot(){
     _tree = _nodeofOperation[0];
+    bool setcount = 0;    
     for(int i = 0 ; i < _operation.size() ; i++){
-      if(_operation[i] =='='){
+      if (_operation[i] ==';'){
+        if(setcount !=  1){
+          _tree = _nodeofOperation[i];          
+        }
+        setcount = 1 ;         
+      }
+      else if(_operation[i] ==','){
+        if(setcount !=  1){
+          _tree = _nodeofOperation[i];          
+        }
+        setcount = 1 ;   
+      }      
+      else if(setcount == 0){
         _tree = _nodeofOperation[i];
       }
-      if(_operation[i] ==','){
-        _tree = _nodeofOperation[i];
-        break;        
-      }      
     }
   }
 

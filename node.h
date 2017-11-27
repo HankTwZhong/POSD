@@ -15,11 +15,15 @@ public:
   }
 
   bool evaluate(){
-    if(payload == COMMA){
+    
+    if(payload == COMMA  ){
       return (left->evaluate() && right->evaluate()) ;
     }
+    else if(payload == SEMICOLON){
+      return (left->evaluate() || right->evaluate()) ;      
+    }
     else if(payload == EQUALITY){
-      std::cout << "evaluate may be break" << std::endl;
+      std::cout << "evaluate leftSide:"+left->term->symbol()+"\t rightSide:"+right->term->symbol() << std::endl;
       return (left->term->match(*(right->term))) ;      
     }
     return false;
