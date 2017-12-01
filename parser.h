@@ -38,11 +38,6 @@ public:
     else if(token == '['){
       return list();
     }
-    // if(token == ',' || token == ';' || token == '=' ){
-    //   _operation.push_back((char)(token));
-    //   std::cout << std::to_string(token) << std::endl;
-    // }
-
     return nullptr;
   }
 
@@ -78,20 +73,7 @@ public:
   }
 
   void matchings (){
-
-    //1.--藉由某樣樣函式抓取 掃到的東西然後 存到 一個容器
-    //  --然後再組裝容器??
-    //2.或者 我直接放到node 裡面??
-    //  然後就直接建出東西來
-    //  而規則就是已知道的那樣
-    //  但是這樣順序就會不一致 過於FIFO
-    //3.不然就是藉由抓取出來之後再排序
-    //  不過誰前誰後就需要撰寫規則
-    //4.
-    // std::cout << _terms.size() << std::endl;
-
-
-    createTerms(); //抓取term and operation
+    createTerms(); 
     createNode ();
     createNodeofRealation();
     for (int i =0 ; i< _terms.size() ; i++ )
@@ -100,9 +82,6 @@ public:
     }    
   }
   void createNode (){
-    // 先想一個node 具有符號與值的對應
-    // 之後存入容器    
-    // 建立operation的node
     int EqualityCounter= 0;
     int SymbolofNode;
     vector<Node*> nodeofTerms ;
@@ -142,7 +121,6 @@ public:
     vector <Term* > blockofVariableAndStruct ;
     recursive_inorder(_tree,blockofVariableAndStruct);
     std::cout << "recursive_inorder:"+ std::to_string(blockofVariableAndStruct.size()) <<std::endl;    
-    std::cout <<"done" <<std::endl;
     
   }
   void matchVariabletoNestedStruct(Struct* parm_Struct ,Term*  goalofVariable){
@@ -174,13 +152,11 @@ public:
       }       
       if( here->term != 0 ){
         Variable * varb= dynamic_cast<Variable*>(here->term);
-        if(varb){ 
-          v.push_back(here->term);                       
-        }  
         Struct * Stru= dynamic_cast<Struct*>(here->term);
-        if(Stru){ 
+        if(varb)
           v.push_back(here->term);                       
-        }  
+        else if(Stru)
+          v.push_back(here->term);                       
       }
       for(int i = 0 ; i<v.size() ; i++){
         for(int j = 0 ; j<v.size() ; j++){
@@ -195,35 +171,51 @@ public:
           }        
         }
       }
-
       //下方為Struct的遞迴
       if(here->left != NULL && here->right != NULL && here->payload == SEMICOLON){
         recursive_inorderToNodeofSEMICOLON(here ,v );
-        for(int i = 0 ; i<v.size() ; i++){
-          for(int j = 0 ; j<v.size() ; j++){
-            Struct* transStruct = dynamic_cast<Struct*>(v[j]);
-            if(transStruct && i != j){
-              matchVariabletoNestedStruct(transStruct ,v[i] );
-            }
-            if(v[i]->symbol() == v[j]->symbol() && i != j){
-              std::cout << "SEMICOLON left_ele:"+v[i]->symbol() + "\t SEMICOLON right_ele:" +v[j]->symbol() <<std::endl;          
-              v[i]->match(*v[j]);  
-              v.erase(v.begin()+ j);      
-            }        
-          }
+        matchInorderResult(v);
       }
     }
   }
-}
 
+  void matchInorderResult (vector <Term*> v ){
+    for(int i = 0 ; i<v.size() ; i++){
+      for(int j = 0 ; j<v.size() ; j++){
+        Struct* transStruct = dynamic_cast<Struct*>(v[j]);
+        if(transStruct && i != j){
+          matchVariabletoNestedStruct(transStruct ,v[i] );
+        }
+        if(v[i]->symbol() == v[j]->symbol() && i != j){
+          std::cout << "SEMICOLON left_ele:"+v[i]->symbol() + "\t SEMICOLON right_ele:" +v[j]->symbol() <<std::endl;          
+          v[i]->match(*v[j]);  
+          v.erase(v.begin()+ j);      
+        }        
+      }
+    }
+  }
   void recursive_inorderToNodeofSEMICOLON(Node *here , vector<Term*> & v){
     if(here != NULL)
     {
       if(here->left != NULL && here->right != NULL && here->payload == SEMICOLON){
-        recursive_inorder(here->left ,v);
         vector<Term*> v2 = {};
+        recursive_inorder(here->left ,v);
         recursive_inorder(here->right,v2);          
-      }      
+        for(int i = 0 ; i< v2.size() ; i++){
+          for(int j = 0 ; j < v2.size() ; j++){
+            Struct* transStruct = dynamic_cast<Struct*>(v2[j]);
+            if(transStruct && i != j){
+              matchVariabletoNestedStruct(transStruct ,v2[i] );
+            }
+            if(v2[i]->symbol() == v2[j]->symbol() && i != j){
+              std::cout << "SEMICOLON left_ele:"+v2[i]->symbol() + "\t SEMICOLON right_ele:" +v2[j]->symbol() <<std::endl;          
+              v2[i]->match(*v2[j]);  
+              v2.erase(v2.begin()+ j);      
+            }        
+          }
+        }  
+      }    
+     
     }
   }
   
