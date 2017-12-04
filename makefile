@@ -1,5 +1,5 @@
 all: hw7
-hw6: mainIterator.o term.o list.o struct.o
+hw7: mainIterator.o term.o list.o struct.o
 ifeq (${OS}, Windows_NT)
 	g++ -o hw7 mainIterator.o term.o list.o struct.o  -lgtest 
 else 
