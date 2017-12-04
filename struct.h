@@ -4,6 +4,7 @@
 #include "atom.h"
 #include <vector>
 #include <string>
+#include <queue>
 
 using std::string;
 
@@ -42,9 +43,14 @@ public:
     ret  += (*it)->value()+")";
     return ret;
   }
+  Iterator<Term*> * createIterator();
+  Iterator<Struct*> * createBFSIterator();
+  Iterator<Struct*> * createDFSIterator();
+  std::vector<Term *> BFS();
 private:
   Atom _name;
   std::vector<Term *> _args;
+  
 };
 
 #endif
