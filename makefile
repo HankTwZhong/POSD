@@ -38,7 +38,7 @@ mainParser.o: mainParser.cpp utParser.h node.h
 utIterator: mainIterator.o term.o list.o struct.o iterator.h utIterator.h
 	g++ -o utIterator mainIterator.o term.o list.o struct.o -lgtest -lpthread
 mainIterator.o: mainIterator.cpp utIterator.h
-	g++ -std=c++11 -c mainIterator.cpp
+	g++ -std=gnu++0x  -c mainIterator.cpp
 
 clean:
 	rm -f *.o  utList utScanner utParser hw6 utIterator
