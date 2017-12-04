@@ -1,22 +1,26 @@
 #include "struct.h"
 #include "iterator.h"
-#include <typeinfo>
-#include <iostream>
+
 using namespace std;
 
 Iterator<Term*> * Struct::createIterator(){
   return new StructIterator<Term*>(this);
 }
-Iterator<Struct*> * Struct::createBFSIterator (){
 
-  // return new BFSIterator(this);
+Iterator<Term*> * Struct::createBFSIterator (){
+  vector <Term*> BFSvec = this->BFS();
+  return new BFSIterator<Term*>(BFSvec);
 }
-//撰寫出一個BFS
+
+Iterator<Term*> * Struct::createDFSIterator (){
+  vector <Term*> DFSvec = this->DFS();
+  return new DFSIterator<Term*>(DFSvec);
+}
+
 vector<Term *> Struct::BFS(){
   queue <Term *> q;
-  vector<Term *> tempTer ;
+  vector<Term *> resultVec ;
   Struct * converStruct  ;
-  Struct * tmpStr ;
   for(int i = 0  ;  i < this->arity() ; i ++){
     q.push(this->args(i));
   }
@@ -27,15 +31,40 @@ vector<Term *> Struct::BFS(){
         q.push(converStruct->args(i));
       }
     }
-    tempTer.push_back(q.front());
+    //elseif ------List
+    resultVec.push_back(q.front());
     q.pop();
   }
-  return tempTer;
+  return resultVec;
 }
 
-// Iterator * Struct::createDFSIterator(){
-  
+vector<Term *> Struct::DFS(){
+  stack <Term *> stk;
+  vector<Term *> resultVec ;
+  Struct * converStruct  ;
+  for(int i = 0  ;  i < this->arity() ; i ++){
+    stk.push(this->args(i));      
+    converStruct = dynamic_cast<Struct*>(stk.top());
+    resultVec.push_back(stk.top());
+    if(converStruct){
+      recursiveofDFS(converStruct,stk,resultVec);    
+    }
+    //else if list
+    stk.pop();
+  }
+  return resultVec;
+}
 
-//   // 寫個DFS的演算法去做抓值
-//   // 然後就給他抓下去
-// }
+void Struct::recursiveofDFS (Struct *s,stack<Term*> &stk , vector<Term*> &resultVec){
+  Struct * converStruct  ;  
+  for(int i = 0  ;  i < s->arity() ; i ++){
+    stk.push(s->args(i));      
+    resultVec.push_back(stk.top());
+    converStruct = dynamic_cast<Struct*>(stk.top());
+    if(converStruct) {
+      recursiveofDFS(converStruct,stk,resultVec);    
+    }
+    //else if list
+    stk.pop();
+  }
+}

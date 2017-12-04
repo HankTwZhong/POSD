@@ -3,6 +3,7 @@
 
 #include "struct.h"
 #include "list.h"
+#include <iostream>
 
 template <class T>
 class Iterator {
@@ -53,9 +54,8 @@ private:
 };
 template <class T>
 class ListIterator :public Iterator <T> {
-public:
-  ListIterator(List *list): _index(0), _list(list) {}
-
+public:  
+  friend class List;  
   void first() {
     _index = 0;
   }
@@ -72,17 +72,59 @@ public:
     _index++;
   }
 private:
+  ListIterator(List *list): _index(0), _list(list) {}
   int _index;
   List* _list;
 };
 template <class T>
 class BFSIterator : public Iterator <T>{
 public:
+  friend class Struct;
+  friend class List;  
+  void first() {
+    _index = 0;
+  }
 
+  Term* currentItem() const {
+    return _BFSresult[_index];
+  }
+
+  bool isDone() const {
+    return (_index >= _BFSresult.size());
+  }
+
+  void next() {
+    _index++;
+  }
 private:
+  BFSIterator(vector <Term*> BFSresult ): _index(0), _BFSresult(BFSresult) {}
+  
+  int _index;
+  vector<Term*> _BFSresult;
 };
 template <class T>
 class DFSIterator:public Iterator <T> {
+public:
+  friend class Struct;
+  friend class List;  
+  void first() {
+    _index = 0;
+  }
 
+  Term* currentItem() const {
+    return _DFSresult[_index];
+  }
+
+  bool isDone() const {
+    return (_index >= _DFSresult.size());
+  }
+
+  void next() {
+    _index++;
+  }
+private:
+  DFSIterator(vector <Term*> DFSresult ): _index(0), _DFSresult(DFSresult) {}  
+  int _index;
+  vector<Term*> _DFSresult;
 };
 #endif

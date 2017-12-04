@@ -4,9 +4,15 @@
 #include "term.h"
 #include <vector>
 #include <string>
+#include <queue>
+#include <stack>
+#include <typeinfo>
+#include <iostream>
+#include <string>
 #include <typeinfo>
 #include <iostream>
 using std::vector;
+using namespace std;
 
 class Variable ;
 
@@ -24,6 +30,12 @@ public:
     return _elements[index];
   }
   int arity() const {return _elements.size();}  
+  Iterator<Term*> * createIterator();
+  Iterator<Term*> * createBFSIterator();
+  Iterator<Term*> * createDFSIterator();
+  vector<Term *> BFS();
+  vector<Term *> DFS();  
+  void recursiveofDFS(List *s , stack<Term*> &stk , vector<Term*> &vec_Ter);  
 private:
   vector<Term *> _elements;
 };

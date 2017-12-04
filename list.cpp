@@ -1,9 +1,8 @@
-#include "term.h"
 #include "list.h"
 #include "variable.h"
-#include <typeinfo>
-#include <iostream>
-#include <string>
+#include "iterator.h"
+
+
 using std::vector;
 
 string List::symbol() const{
@@ -84,4 +83,65 @@ List * List::tail() const {
     _clone_elements.assign(_elements.begin()+1, _elements.end());     
     List *ls= new List(_clone_elements) ;
     return ls;
+}
+Iterator<Term*> * List::createIterator(){
+    return new ListIterator<Term*>(this);
+}
+Iterator<Term*> * List::createBFSIterator (){
+    vector <Term*> BFSvec = this->BFS();
+    return new BFSIterator<Term*>(BFSvec);
+}
+vector<Term*> List::BFS(){
+    queue<Term *> que;
+    vector<Term *> resultVec;
+    List * converList;
+    for(int i = 0 ; i < this->arity() ;i++ ){
+        que.push(this->args(i));
+    }
+    while(!que.empty()){
+        converList = dynamic_cast<List*>(que.front());
+        if(converList){
+            for(int i =0 ; i<converList->arity() ; i++)
+                que.push(converList->args(i));
+        }
+        resultVec.push_back(que.front());
+        que.pop();
+    }
+    return resultVec;
+}
+
+vector<Term *> List::DFS(){
+    stack <Term *> stk;
+    vector<Term *> resultVec ;
+    List * converList  ;
+    for(int i = 0  ;  i < this->arity() ; i ++){
+      stk.push(this->args(i));      
+      converList = dynamic_cast<List*>(stk.top());
+      resultVec.push_back(stk.top());
+      if(converList){
+        recursiveofDFS(converList,stk,resultVec);    
+      }
+      //else if list
+      stk.pop();
+    }
+    return resultVec;
+}
+
+void List::recursiveofDFS (List *l , stack<Term*> &stk , vector<Term*> &resultVec){
+    List * converList  ;  
+    for(int i = 0  ;  i < l->arity() ; i ++){
+      stk.push(l->args(i));      
+      resultVec.push_back(stk.top());
+      converList = dynamic_cast<List*>(stk.top());
+      if(converList) {
+        recursiveofDFS(converList,stk,resultVec);    
+      }
+      //else if list
+      stk.pop();
+    }
+}
+
+Iterator<Term*>* List::createDFSIterator(){
+    vector<Term*> DFSvec = this->DFS();
+    return new DFSIterator<Term*>(DFSvec);
 }

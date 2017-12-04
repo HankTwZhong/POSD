@@ -1,9 +1,9 @@
-all: hw6
-hw6: mainParser.o term.o list.o struct.o
+all: hw7
+hw6: mainIterator.o term.o list.o struct.o
 ifeq (${OS}, Windows_NT)
-	g++ -o hw6 mainParser.o term.o list.o struct.o  -lgtest 
+	g++ -o hw7 mainIterator.o term.o list.o struct.o  -lgtest 
 else 
-	g++ -o hw6 mainParser.o term.o list.o struct.o  -lgtest -lpthread
+	g++ -o hw7 mainIterator.o term.o list.o struct.o  -lgtest -lpthread
 endif
 
 utAtom: mainAtom.o atom.o
