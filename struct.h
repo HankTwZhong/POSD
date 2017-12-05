@@ -10,7 +10,7 @@
 #include <iostream>
 using std::string;
 using namespace std;
-
+class List ;
 class Struct: public Term {
 public:
   Struct(Atom name, std::vector<Term *> args): _name(name) {
@@ -52,6 +52,7 @@ public:
   std::vector<Term *> BFS();
   std::vector<Term *> DFS();  
   void recursiveofDFS(Struct *s , stack<Term*> &stk , vector<Term*> &vec_Ter);
+  void recursiveofDFS(List *l ,  stack<Term*> &stk , vector<Term*> &vec_Ter);
 private:
   Atom _name;
   std::vector<Term *> _args;

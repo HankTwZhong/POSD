@@ -14,6 +14,7 @@
 using std::vector;
 using namespace std;
 
+class Struct ;
 class Variable ;
 
 class List : public Term {
@@ -35,7 +36,8 @@ public:
   Iterator<Term*> * createDFSIterator();
   vector<Term *> BFS();
   vector<Term *> DFS();  
-  void recursiveofDFS(List *s , stack<Term*> &stk , vector<Term*> &vec_Ter);  
+  void recursiveofDFS(Struct *s , stack<Term*> &stk , vector<Term*> &vec_Ter);  
+  void recursiveofDFS(List *l ,  stack<Term*> &stk , vector<Term*> &vec_Ter);
 private:
   vector<Term *> _elements;
 };

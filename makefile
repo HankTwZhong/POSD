@@ -41,6 +41,6 @@ mainIterator.o: mainIterator.cpp utIterator.h
 	g++ -std=gnu++0x  -c mainIterator.cpp
 
 clean:
-	rm -f *.o  utList utScanner utParser hw6 utIterator
+	rm -f *.o  utList utScanner utParser hw7 utIterator
 stat:
 	wc *.h *.cpp

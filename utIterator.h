@@ -84,35 +84,83 @@ TEST(iterator, NullIterator){
   ASSERT_TRUE(it->isDone());
 }
 
-TEST(iterator, StructofBFS_1level){
+TEST(iterator, StructofBFS_level){
     Number one(1);
-    Variable X("X");
-    Variable Y("Y");
     Number two(2);
-    Struct t(Atom("t"), { &X, &Y, &one, &two });
-   
-    ASSERT_EQ(4,t.BFS().size());
-}
-TEST(iterator, StructofBFS_2level){
-    Number one(1);
-    Variable X("X");
-    Variable Y("Y");
-    Number two(2);
-    Struct t2(Atom("t2"), { &X, &Y});    
-    Struct t(Atom("t"), { &one, &t2 , &two });
+    Number three(3);
     
-    std::vector<Term *> v = {&X};
-    Struct s2(Atom("s2"), v);
-    std::vector<Term *> v2 = {&s2};
-    Struct s1(Atom("s1"), v2);
-    Number pi(3.14);
-    X.match(pi);
+    Variable X("X");
+    Variable Y("Y");
+    Variable Z("Z");   
 
-    ASSERT_EQ(5,t.BFS().size());
-    ASSERT_EQ(2,s1.BFS().size());
+    List l({ &Z, &three });    
+    Struct t(Atom("t"), { &X, &two, &l });
+    Struct s(Atom("s"), { &Y, &t, &two });
+    Iterator<Term*>* it = s.createBFSIterator();
+    it->first();
+    ASSERT_EQ("Y", it->currentItem()->symbol());
+    it->isDone();
+    ASSERT_FALSE(it->isDone());
+    it->next();
+    ASSERT_EQ("t(X, 2, [Z, 3])", it->currentItem()->symbol());
+    it->isDone();
+    ASSERT_FALSE(it->isDone());
+    it->next();
+    ASSERT_EQ("2", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("X", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("2", it->currentItem()->symbol());    
+    it->next(); 
+    ASSERT_EQ("[Z, 3]", it->currentItem()->symbol());    
+    it->next();    
+    ASSERT_EQ("Z", it->currentItem()->symbol());    
+    it->next();    
+    ASSERT_EQ("3", it->currentItem()->symbol());    
+    it->next();        
+    it->isDone();
+    ASSERT_TRUE(it->isDone());
+    
+}
+TEST(iterator, StructofDFS_level){
+    Number one(1);
+    Number two(2);
+    Number three(3);
+    
+    Variable X("X");
+    Variable Y("Y");
+    Variable Z("Z");   
+
+    List l({ &Z, &three });    
+    Struct t(Atom("t"), { &X, &two, &l });
+    Struct s(Atom("s"), { &Y, &t, &two });
+    Iterator<Term*>* it = s.createDFSIterator();
+    it->first();
+    ASSERT_EQ("Y", it->currentItem()->symbol());
+    it->isDone();
+    ASSERT_FALSE(it->isDone());
+    it->next();
+    ASSERT_EQ("t(X, 2, [Z, 3])", it->currentItem()->symbol());
+    it->isDone();
+    ASSERT_FALSE(it->isDone());
+    it->next();
+    ASSERT_EQ("X", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("2", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("[Z, 3]", it->currentItem()->symbol());    
+    it->next(); 
+    ASSERT_EQ("Z", it->currentItem()->symbol());    
+    it->next();       
+    ASSERT_EQ("3", it->currentItem()->symbol());    
+    it->next();        
+    ASSERT_EQ("2", it->currentItem()->symbol());    
+    it->next();      
+    it->isDone();
+    ASSERT_TRUE(it->isDone());
 }
 
-TEST(iterator, firstBFSIterator){
+TEST(iterator, ListfirstBFSIterator){
     Number one(1);
     Variable X("X");
     Variable Y("Y");
@@ -138,7 +186,7 @@ TEST(iterator, firstBFSIterator){
     itList->isDone();
     ASSERT_TRUE(itList->isDone());
 }
-TEST(iterator, firstDFSIterator){
+TEST(iterator, ListfirstDFSIterator){
     Number one(1);
     Variable X("X");
     Variable Y("Y");
@@ -164,6 +212,6 @@ TEST(iterator, firstDFSIterator){
     itList->isDone();
     ASSERT_TRUE(itList->isDone());
 }
-  
+
 
 #endif
