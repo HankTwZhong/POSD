@@ -84,7 +84,35 @@ TEST(iterator, NullIterator){
   ASSERT_TRUE(it->isDone());
 }
 
-TEST(iterator, StructofBFS_level){
+
+TEST(iterator, nonNestedStructBFS){
+    Number five(5);
+    Number seven(7);
+    Number nine(9);
+    
+    Variable X("X");
+    Variable Y("Y");
+    Variable Z("Z"); 
+
+    Struct s(Atom("s"),{&five,&seven,&nine,&X,&Y,&Z});
+    Iterator<Term*>* it = s.createBFSIterator();
+    it->first();
+    ASSERT_EQ("5", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("7", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("9", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("X", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("Y", it->currentItem()->symbol());    
+    it->next(); 
+    ASSERT_EQ("Z", it->currentItem()->symbol());    
+    it->next();    
+    it->isDone();
+    ASSERT_TRUE(it->isDone());
+}
+TEST(iterator, StructofBFS_includeList){
     Number one(1);
     Number two(2);
     Number three(3);
@@ -122,7 +150,7 @@ TEST(iterator, StructofBFS_level){
     ASSERT_TRUE(it->isDone());
     
 }
-TEST(iterator, StructofDFS_level){
+TEST(iterator, StructofDFS_includeList){
     Number one(1);
     Number two(2);
     Number three(3);
@@ -159,7 +187,6 @@ TEST(iterator, StructofDFS_level){
     it->isDone();
     ASSERT_TRUE(it->isDone());
 }
-
 TEST(iterator, ListfirstBFSIterator){
     Number one(1);
     Variable X("X");
@@ -213,5 +240,144 @@ TEST(iterator, ListfirstDFSIterator){
     ASSERT_TRUE(itList->isDone());
 }
 
+TEST(iterator, ListofDFS_level){
+    Number one(1);
+    Number two(2);
+    Number three(3);
+    
+    Variable X("X");
+    Variable Y("Y");
+    Variable Z("Z");   
 
+    List l({ &Z, &three });    
+    Struct t(Atom("t"), { &X, &two, &l });
+    List s({ &Y, &t, &two });
+    Iterator<Term*>* it = s.createDFSIterator();
+    it->first();
+    ASSERT_EQ("Y", it->currentItem()->symbol());
+    it->isDone();
+    ASSERT_FALSE(it->isDone());
+    it->next();
+    ASSERT_EQ("t(X, 2, [Z, 3])", it->currentItem()->symbol());
+    it->isDone();
+    ASSERT_FALSE(it->isDone());
+    it->next();
+    ASSERT_EQ("X", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("2", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("[Z, 3]", it->currentItem()->symbol());    
+    it->next(); 
+    ASSERT_EQ("Z", it->currentItem()->symbol());    
+    it->next();       
+    ASSERT_EQ("3", it->currentItem()->symbol());    
+    it->next();        
+    ASSERT_EQ("2", it->currentItem()->symbol());    
+    it->next();      
+    it->isDone();
+    ASSERT_TRUE(it->isDone());
+}
+
+TEST(iterator, ListofBFS_ig){
+    Number one(1);
+    Number two(2);
+    Number three(3);    
+    Number four(4);
+    Number five(5);
+    Number sex(6);    
+    Number seven(7);
+    Number eight(8);
+    Number nine(9);
+    List l2l({&eight, &nine});    
+    List l2m({&three, &four});
+    List l2rin({&sex, &seven});        
+    List l2r({&five , &l2rin});
+    List l2rr({&one});        
+    List l3r({&seven, & sex});    
+    List l1rot({ &l2l, &two , &l2m,&l2r ,&l2rr});    
+
+    Iterator<Term*>* it = l1rot.createBFSIterator();
+    it->first();
+    ASSERT_EQ("[8, 9]", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("2", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("[3, 4]", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("[5, [6, 7]]", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("[1]", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("8", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("9", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("3", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("4", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("5", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("[6, 7]", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("1", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("6", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("7", it->currentItem()->symbol());
+    it->next(); 
+    it->isDone();
+    ASSERT_TRUE(it->isDone());
+}
+TEST(iterator, ListofDFS_ig){
+    Number one(1);
+    Number two(2);
+    Number three(3);    
+    Number four(4);
+    Number five(5);
+    Number sex(6);    
+    Number seven(7);
+    Number eight(8);
+    Number nine(9);
+    List l2l({&eight, &nine});    
+    List l2m({&three, &four});
+    List l2rin({&sex, &seven});        
+    List l2r({&five , &l2rin});
+    List l2rr({&one});        
+    List l3r({&seven, & sex});    
+    List l1rot({ &l2l, &two , &l2m,&l2r ,&l2rr});    
+    
+    Iterator<Term*>* it = l1rot.createDFSIterator();
+    it->first();
+    ASSERT_EQ("[8, 9]", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("8", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("9", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("2", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("[3, 4]", it->currentItem()->symbol());
+    it->next();
+    ASSERT_EQ("3", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("4", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("[5, [6, 7]]", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("5", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("[6, 7]", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("6", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("7", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("[1]", it->currentItem()->symbol());
+    it->next(); 
+    ASSERT_EQ("1", it->currentItem()->symbol());
+    it->next(); 
+    it->isDone();
+    ASSERT_TRUE(it->isDone());
+}
 #endif
