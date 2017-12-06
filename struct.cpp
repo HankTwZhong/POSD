@@ -18,13 +18,14 @@ Iterator<Term*> * Struct::createDFSIterator (){
 }
 
 vector<Term *> Struct::BFS(){
-  queue <Term *> q;
+  queue <Term *> q ;
   vector<Term *> resultVec ;
   Struct * converStruct  ;
   List * converList;
   for(int i = 0  ;  i < this->arity() ; i ++){
     q.push(this->args(i));
   }
+  cout << "BFS\tStruct\tIn:"+q.front() << endl;    
   while(!q.empty()){
     converStruct = dynamic_cast<Struct*>(q.front());
     converList = dynamic_cast<List*> (q.front());
@@ -39,6 +40,7 @@ vector<Term *> Struct::BFS(){
       }
     }
     resultVec.push_back(q.front());
+    cout << "BFS\tStruct\tOut:"+q.front() << endl;
     q.pop();
   }
   return resultVec;
