@@ -99,6 +99,7 @@ Iterator<Term*>* List::createDFSIterator(){
 vector<Term*> List::BFS(){
     queue<Term *> que;
     vector<Term *> resultVec;
+    Struct * converStruct  ;
     List * converList;
     for(int i = 0 ; i < this->arity() ;i++ ){
         que.push(this->args(i));
@@ -109,6 +110,11 @@ vector<Term*> List::BFS(){
         if(converList){
             for(int i =0 ; i<converList->arity() ; i++)
                 que.push(converList->args(i));
+        }
+        else if(converStruct){
+            for(int i = 0 ; i < converStruct->arity() ; i++){
+                que.push(converStruct->args(i));
+            }
         }
         resultVec.push_back(que.front());
         cout << "BFS\tList\tOut:" << endl;
