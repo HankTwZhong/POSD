@@ -108,6 +108,7 @@ vector<Term*> List::BFS(){
     cout << "BFS\tList\tIn:"<< endl;        
     while(!que.empty()){
         converList = dynamic_cast<List*>(que.front());
+        converStruct = dynamic_cast<Struct*>(que.front());    
         if(converList){
             for(int i =0 ; i<converList->arity() ; i++){
                 que.push(converList->args(i));
@@ -122,6 +123,7 @@ vector<Term*> List::BFS(){
             }
         }
         resultVec.push_back(que.front());
+        cout << (que.front()) << endl;        
         cout << "BFS\tList\tOut:" << endl;
         
         que.pop();
