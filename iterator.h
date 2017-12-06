@@ -98,6 +98,9 @@ public:
   }
 private:
   BFSIterator(vector <Term*> BFSresult ): _index(0), _BFSresult(BFSresult) {}
+  ~BFSIterator() {delete _BFSresult ;}
+  
+  
   
   int _index;
   vector<Term*> _BFSresult;
@@ -124,6 +127,7 @@ public:
   }
 private:
   DFSIterator(vector <Term*> DFSresult ): _index(0), _DFSresult(DFSresult) {}  
+  ~DFSIterator() {delete _DFSresult ;}  
   int _index;
   vector<Term*> _DFSresult;
 };
