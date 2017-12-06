@@ -25,7 +25,7 @@ vector<Term *> Struct::BFS(){
   for(int i = 0  ;  i < this->arity() ; i ++){
     q.push(this->args(i));
   }
-  cout << "BFS\tStruct\tIn:"+q.front() << endl;    
+  cout << "BFS\tStruct\tIn:"<< endl;    
   while(!q.empty()){
     converStruct = dynamic_cast<Struct*>(q.front());
     converList = dynamic_cast<List*> (q.front());
@@ -40,7 +40,7 @@ vector<Term *> Struct::BFS(){
       }
     }
     resultVec.push_back(q.front());
-    cout << "BFS\tStruct\tOut:"+q.front() << endl;
+    cout << "BFS\tStruct\tOut:"<< endl;
     q.pop();
   }
   return resultVec;
