@@ -103,17 +103,22 @@ vector<Term*> List::BFS(){
     List * converList;
     for(int i = 0 ; i < this->arity() ;i++ ){
         que.push(this->args(i));
+        cout << this->args(i)->symbol() << endl;        
     }
     cout << "BFS\tList\tIn:"<< endl;        
     while(!que.empty()){
         converList = dynamic_cast<List*>(que.front());
         if(converList){
-            for(int i =0 ; i<converList->arity() ; i++)
+            for(int i =0 ; i<converList->arity() ; i++){
                 que.push(converList->args(i));
+                cout << converList->args(i)->symbol() << endl;        
+            }
+        
         }
         else if(converStruct){
             for(int i = 0 ; i < converStruct->arity() ; i++){
                 que.push(converStruct->args(i));
+                cout << converStruct->args(i)->symbol() << endl;                        
             }
         }
         resultVec.push_back(que.front());
