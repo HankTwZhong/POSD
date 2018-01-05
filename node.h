@@ -32,7 +32,6 @@ public:
     return false;
   }
   string CombinationOfPayload() {
-    evaluate();
     if(payload == TERM)
       return this->term->symbol();
     else
