@@ -1,9 +1,9 @@
-all: hw7
-hw7: mainIterator.o term.o list.o struct.o
+all: hw8
+hw8: mainProlog.o term.o list.o struct.o
 ifeq (${OS}, Windows_NT)
-	g++ -o hw7 mainIterator.o term.o list.o struct.o  -lgtest 
+	g++ -o hw8 mainProlog.o  term.o list.o struct.o -lgtest 
 else 
-	g++ -o hw7 mainIterator.o term.o list.o struct.o  -lgtest -lpthread
+	g++ -o hw8 mainProlog.o  term.o list.o struct.o -lgtest -lpthread
 endif
 
 utAtom: mainAtom.o atom.o
@@ -16,10 +16,10 @@ mainVariable.o: mainVariable.cpp utVariable.h variable.h
 		g++ -std=gnu++0x -c mainVariable.cpp
 term.o: term.cpp term.h
 	g++ -std=gnu++0x  -c term.cpp
-struct.o: struct.cpp struct.h
-	g++ -std=gnu++0x -c struct.cpp	
-list.o: list.cpp list.h term.h variable.h
+list.o: list.cpp list.h 
 	g++ -std=gnu++0x  -c list.cpp
+struct.o: struct.cpp struct.h 
+	g++ -std=gnu++0x  -c struct.cpp
 utList: mainList.o term.o list.o
 	g++ -o utList mainList.o term.o list.o -lgtest -lpthread
 mainList.o: mainList.cpp utList.h
@@ -34,13 +34,19 @@ utParser: mainParser.o  term.o list.o struct.o
 	g++ -o utParser mainParser.o term.o list.o struct.o -lgtest -lpthread
 mainParser.o: mainParser.cpp utParser.h node.h
 		g++ -std=gnu++0x -c mainParser.cpp
-
-utIterator: mainIterator.o term.o list.o struct.o iterator.h utIterator.h
-	g++ -o utIterator mainIterator.o term.o list.o struct.o -lgtest -lpthread
+utIterator: mainIterator.o term.o list.o struct.o 
+	g++ -o utIterator mainIterator.o term.o list.o struct.o  -lgtest -lpthread
 mainIterator.o: mainIterator.cpp utIterator.h
-	g++ -std=gnu++0x  -c mainIterator.cpp
+	g++ -std=gnu++0x -c mainIterator.cpp
+mainProlog.o: mainProlog.cpp utException.h utExpression.h
+	g++ -std=gnu++0x -c mainProlog.cpp
+
 
 clean:
-	rm -f *.o  utList utScanner utParser hw7 utIterator
+ifeq (${OS}, Windows_NT)
+	del *.o *.exe
+else
+	rm -f *.o hw8 utException
+endif
 stat:
 	wc *.h *.cpp

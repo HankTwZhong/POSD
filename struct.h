@@ -3,14 +3,10 @@
 
 #include "atom.h"
 #include <vector>
-#include <stack>
 #include <string>
-#include <queue>
-#include <typeinfo>
-#include <iostream>
+
 using std::string;
-using namespace std;
-class List ;
+
 class Struct: public Term {
 public:
   Struct(Atom name, std::vector<Term *> args): _name(name) {
@@ -46,17 +42,12 @@ public:
     ret  += (*it)->value()+")";
     return ret;
   }
-  Iterator<Term*> * createIterator();
-  Iterator<Term*> * createBFSIterator();
-  Iterator<Term*> * createDFSIterator();
-  std::vector<Term *> BFS();
-  std::vector<Term *> DFS();  
-  void recursiveofDFS(Struct *s , stack<Term*> &stk , vector<Term*> &vec_Ter);
-  void recursiveofDFS(List *l ,  stack<Term*> &stk , vector<Term*> &vec_Ter);
+  Iterator <Term*>* createIterator();
+  Iterator <Term*>* createDFSIterator();
+  Iterator <Term*>* createBFSIterator();
 private:
   Atom _name;
   std::vector<Term *> _args;
-  
 };
 
 #endif

@@ -4,17 +4,10 @@
 #include "term.h"
 #include <vector>
 #include <string>
-#include <queue>
-#include <stack>
-#include <typeinfo>
-#include <iostream>
-#include <string>
 #include <typeinfo>
 #include <iostream>
 using std::vector;
-using namespace std;
 
-class Struct ;
 class Variable ;
 
 class List : public Term {
@@ -28,16 +21,14 @@ public:
   Term * head() const;
   List * tail() const;
   Term * args(int index) {
-    return _elements[index];
+	  return _elements[index];
   }
-  int arity() const {return _elements.size();}  
+  int arity() {
+	  return _elements.size();
+  }
   Iterator<Term*> * createIterator();
-  Iterator<Term*> * createBFSIterator();
   Iterator<Term*> * createDFSIterator();
-  vector<Term *> BFS();
-  vector<Term *> DFS();  
-  void recursiveofDFS(Struct *s , stack<Term*> &stk , vector<Term*> &vec_Ter);  
-  void recursiveofDFS(List *l ,  stack<Term*> &stk , vector<Term*> &vec_Ter);
+  Iterator<Term*> * createBFSIterator();
 private:
   vector<Term *> _elements;
 };

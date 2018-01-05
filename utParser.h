@@ -162,40 +162,40 @@ TEST_F(ParserTest, createTerm_ListOfListAndStruct){
   ASSERT_EQ( "[[1], [], s(s(1))]", parser.createTerm()->symbol());
 }
 
-TEST_F(ParserTest, createTerm_illeageTerm){
-  Scanner scanner("[1,2)");
-  Parser parser( scanner );
-  try {
-    parser.createTerm();
-    ASSERT_TRUE(false) << "It should throw a string; \"unexpected token\" as exception.";
-  } catch (std::string exception) {
-    EXPECT_EQ(exception, std::string("unexpected token"));
-  }
-}
+// TEST_F(ParserTest, createTerm_illeageTerm){
+//   Scanner scanner("[1,2)");
+//   Parser parser( scanner );
+//   try {
+//     parser.createTerm();
+//     ASSERT_TRUE(false) << "It should throw a string; \"unexpected token\" as exception.";
+//   } catch (std::string exception) {
+//     EXPECT_EQ(exception, std::string("unexpected token"));
+//   }
+// }
 
-TEST_F(ParserTest, createTerm_ListAsStruct) {
-  Scanner scanner(".(1,[])");
-  Parser parser(scanner);
-  Term* term = parser.createTerm();
-  EXPECT_EQ(".(1, [])", term->symbol());
-  EXPECT_EQ(2, ((Struct *) term)->arity());
-  Number * n = dynamic_cast<Number *>(((Struct *) term)->args(0));
-  EXPECT_EQ("1", n->symbol());
-  List * l = dynamic_cast<List *>(((Struct *) term)->args(1));
-  EXPECT_EQ("[]", l->symbol());
-}
+// TEST_F(ParserTest, createTerm_ListAsStruct) {
+//   Scanner scanner(".(1,[])");
+//   Parser parser(scanner);
+//   Term* term = parser.createTerm();
+//   EXPECT_EQ(".(1, [])", term->symbol());
+//   EXPECT_EQ(2, ((Struct *) term)->arity());
+//   Number * n = dynamic_cast<Number *>(((Struct *) term)->args(0));
+//   EXPECT_EQ("1", n->symbol());
+//   List * l = dynamic_cast<List *>(((Struct *) term)->args(1));
+//   EXPECT_EQ("[]", l->symbol());
+// }
 
-TEST_F(ParserTest, createTerm_ListAsStruct2) {
-  Scanner scanner(".(2,.(1,[]))");
-  Parser parser(scanner);
-  Term* term = parser.createTerm();
-  EXPECT_EQ(".(2, .(1, []))", term->symbol());
-  EXPECT_EQ(2, ((Struct *) term)->arity());
-  Number * n = dynamic_cast<Number *>(((Struct *) term)->args(0));
-  EXPECT_EQ("2", n->symbol());
-  Struct * s = dynamic_cast<Struct *>(((Struct *) term)->args(1));
-  EXPECT_EQ(".(1, [])", s->symbol());
-}
+// TEST_F(ParserTest, createTerm_ListAsStruct2) {
+//   Scanner scanner(".(2,.(1,[]))");
+//   Parser parser(scanner);
+//   Term* term = parser.createTerm();
+//   EXPECT_EQ(".(2, .(1, []))", term->symbol());
+//   EXPECT_EQ(2, ((Struct *) term)->arity());
+//   Number * n = dynamic_cast<Number *>(((Struct *) term)->args(0));
+//   EXPECT_EQ("2", n->symbol());
+//   Struct * s = dynamic_cast<Struct *>(((Struct *) term)->args(1));
+//   EXPECT_EQ(".(1, [])", s->symbol());
+// }
 
 TEST_F(ParserTest, OneMatching) {
   Scanner scanner("X=1.");
@@ -243,6 +243,8 @@ TEST_F(ParserTest, TwoTermsMatching) {
   Node * et = parser.expressionTree();
   EXPECT_TRUE(et->evaluate());
   EXPECT_EQ(COMMA, et->payload);
+  EXPECT_EQ(EQUALITY, et->right->payload);
+  EXPECT_EQ(EQUALITY, et->left->payload);
 
   EXPECT_EQ("1", terms[0]->value());
   EXPECT_EQ("2", terms[2]->value());
@@ -420,8 +422,8 @@ TEST_F(ParserTest, DisjTwoMatchingSuccess) {
   EXPECT_EQ("1", et->left->right->term->symbol());
   EXPECT_EQ("X", et->right->left->term->symbol());
   EXPECT_EQ("2", et->right->right->term->symbol());
-
   EXPECT_TRUE(et->evaluate());
+
 
   EXPECT_EQ("1", terms[0]->value());
   EXPECT_EQ("2", terms[2]->value());

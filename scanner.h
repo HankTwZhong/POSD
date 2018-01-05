@@ -28,6 +28,9 @@ public:
       else if (_tokenValue== (int)'='){
         result += "=";
       }
+      else if (_tokenValue== (int)'.'){
+        result += ".";
+      }
       else{
         result +=  symtable[_tokenValue].first;
       }
@@ -40,12 +43,16 @@ public:
       else if (isdigit(currentChar())) {
         _tokenValue = extractNumber();
         return NUMBER;
-      }  else if (islower(currentChar()) ) {
+      }  else if (islower(currentChar()) || (currentChar() == '_' &&  islower(buffer[pos-1]))) {
         string s = extractAtom();
         processToken<ATOM>(s);
         return ATOM;
       } else if (isSpecialCh(currentChar())) {
         string s = extractAtomSC();
+        if(s == "."){
+          processToken<ONLYDOT>(s);
+          return ONLYDOT;
+        }
         processToken<ATOMSC>(s);
         return ATOMSC;
       } else if (isupper(currentChar()) || currentChar() == '_') {
@@ -83,7 +90,7 @@ public:
 
   string extractAtom() {
     int posBegin = position();
-    for (;isalnum(buffer[pos]); ++pos);
+    for (;isalnum(buffer[pos]) || buffer[pos] == '_'; ++pos);
     return buffer.substr(posBegin, pos-posBegin);
   }
 

@@ -13,9 +13,6 @@ using std::string;
 #include "struct.h"
 #include "list.h"
 #include "node.h"
-
-#include "utParser.h"
-
 class Parser{
 public:
   Parser(Scanner scanner) : _scanner(scanner), _terms(){}
@@ -52,7 +49,7 @@ public:
       _terms.erase(_terms.begin() + startIndexOfStructArgs, _terms.end());
       return new Struct(structName, args);
     } else {
-      throw string("unexpected token");
+      throw string("Unbalanced operator");
     }
   }
 
@@ -65,7 +62,7 @@ public:
       _terms.erase(_terms.begin() + startIndexOfListArgs, _terms.end());
       return new List(args);
     } else {
-      throw string("unexpected token");
+      throw string("Unbalanced operator");
     }
   }
   vector<Term *> & getTerms() {
@@ -73,42 +70,63 @@ public:
   }
 
   void matchings (){
-    createTerms(); 
+    createTerms_ForMathing();
     createNode ();
     createNodeofRealation();
-    for (int i =0 ; i< _terms.size() ; i++ )
-    {
-      std::cout << _terms[i]->symbol() << std::endl;
-    }    
+  }
+  bool buildExpression(){
+    matchings();
+    return expressionTree()->evaluate();
   }
   void createNode (){
     int EqualityCounter= 0;
     int SymbolofNode;
     vector<Node*> nodeofTerms ;
     for(int i = 0 ; i< _terms.size();i++){
-      nodeofTerms.push_back(new Node(TERM,_terms[i],0,0));      
-    }    
+      nodeofTerms.push_back(new Node(TERM,_terms[i],0,0));
+    }
     for(int i = 0 ; i< _operation.size() ;i++){
       switch (_operation[i]){
         case ';': _nodeofOperation.push_back(new  Node (SEMICOLON));break;
         case ',':_nodeofOperation.push_back(new  Node (COMMA)); break;
-        case '=': _nodeofOperation.push_back(new Node (EQUALITY , 0 , nodeofTerms[EqualityCounter],nodeofTerms[EqualityCounter+1])); 
+        case '=': _nodeofOperation.push_back(new Node (EQUALITY , 0 , nodeofTerms[EqualityCounter],nodeofTerms[EqualityCounter+1]));
         EqualityCounter +=2;
         break;
+        case 260 :_nodeofOperation.push_back(new Node(DOT));break;
         default :break;
       }
-    }    
-    std::cout << "OperatioN_Size:"+ std::to_string(_operation.size()) <<std::endl;
+    }
+    int i ;
+    for(i = 0 ; i< _nodeofOperation.size() ;i++){
+      if(_nodeofOperation[i]->payload == DOT)
+        break;
+    }
+    if(i == _nodeofOperation.size())
+      throw string("Missing token '.'");
   }
 
   void createNodeofRealation(){
-    for(int i = 0 ; i< _operation.size() ;i++){
-      if(_operation[i] == ',' || _operation[i] == ';' ){
-        _nodeofOperation[i]->setchild(_nodeofOperation[i-1],_nodeofOperation[i+1]);
-        for(int j = i+1 ; j<_operation.size()  ; j++){
-          if(_operation[j]==','  || _operation[j] == ';'){
-            _nodeofOperation[i]->setchild(_nodeofOperation[i-1],_nodeofOperation[j]);
-            break;
+    if(_operation.size() > 1){
+      for(int i = 0 ; i< _operation.size() ;i++){
+        string exceptionString;
+        if(( _operation[i] == ',' || _operation[i] == ';') && i>=1 && _operation[i-1] == 260){
+          exceptionString = (char)_operation[i];
+          throw string("Unexpected '"+ exceptionString + "' after '.'");
+        }
+        else if(( _operation[i] == ',' || _operation[i] == ';') &&_operation[i+1] == 260){
+          exceptionString = (char)_operation[i];
+          throw string("Unexpected '"+ exceptionString + "' before '.'");
+        }
+      }
+
+      for(int i = 0 ; i< _operation.size() ;i++){
+        if( _operation[i] == ',' || _operation[i] == ';' ){
+          _nodeofOperation[i]->setchild(_nodeofOperation[i-1],_nodeofOperation[i+1]);
+          for(int j = i+1 ; j<_operation.size()  ; j++){
+            if(_operation[j]==','  || _operation[j] == ';'){
+              _nodeofOperation[i]->setchild(_nodeofOperation[i-1],_nodeofOperation[j]);
+              break;
+            }
           }
         }
       }
@@ -117,46 +135,39 @@ public:
     matchingSameVariable();
   }
 
-  void matchingSameVariable(){    
+  void matchingSameVariable(){
     vector <Term* > blockofVariableAndStruct ;
     recursive_inorder(_tree,blockofVariableAndStruct);
-    std::cout << "recursive_inorder:"+ std::to_string(blockofVariableAndStruct.size()) <<std::endl;    
-    
   }
   void matchVariabletoNestedStruct(Struct* parm_Struct ,Term*  goalofVariable){
     Variable* variableofparmStruct ;
     Struct * nestedofStruct;
-    
-    for(int z = 0  ; z < parm_Struct->arity() ; z++){         
-      std::cout  <<"matchVariabletoNestedStruct\t struct_parm:" +parm_Struct->symbol() <<std::endl;
-      
+    for(int z = 0  ; z < parm_Struct->arity() ; z++){
       if (variableofparmStruct = dynamic_cast<Variable*>(parm_Struct->args(z))) {
         if(variableofparmStruct->symbol() == goalofVariable->symbol()){
           variableofparmStruct->match(*goalofVariable) ;
         }
       }
       else if(nestedofStruct =  dynamic_cast<Struct*>(parm_Struct->args(z)) ){
-        std::cout  <<"nestedofStruct ::" +nestedofStruct->symbol() <<std::endl;
          matchVariabletoNestedStruct(nestedofStruct,goalofVariable);
       }
     }
   }
 
-  void recursive_inorder(Node *here , vector<Term*> & v)
-  {
+  void recursive_inorder(Node *here , vector<Term*> & v){
     if(here != NULL)
     {
       if(here->left != NULL && here->right != NULL && here->payload != SEMICOLON){
         recursive_inorder(here->left ,v);
-        recursive_inorder(here->right,v);          
-      }       
+        recursive_inorder(here->right,v);
+      }
       if( here->term != 0 ){
         Variable * varb= dynamic_cast<Variable*>(here->term);
         Struct * Stru= dynamic_cast<Struct*>(here->term);
         if(varb)
-          v.push_back(here->term);                       
+          v.push_back(here->term);
         else if(Stru)
-          v.push_back(here->term);                       
+          v.push_back(here->term);
       }
       for(int i = 0 ; i<v.size() ; i++){
         for(int j = 0 ; j<v.size() ; j++){
@@ -165,10 +176,9 @@ public:
             matchVariabletoNestedStruct(transStruct ,v[i] );
           }
           if(v[i]->symbol() == v[j]->symbol() && i != j){
-            std::cout << "left_ele:"+v[i]->symbol() + "\t right_ele:" +v[j]->symbol() <<std::endl;          
-            v[i]->match(*v[j]);  
-            v.erase(v.begin()+ j);      
-          }        
+            v[i]->match(*v[j]);
+            v.erase(v.begin()+ j);
+          }
         }
       }
       //下方為Struct的遞迴
@@ -187,10 +197,9 @@ public:
           matchVariabletoNestedStruct(transStruct ,v[i] );
         }
         if(v[i]->symbol() == v[j]->symbol() && i != j){
-          std::cout << "SEMICOLON left_ele:"+v[i]->symbol() + "\t SEMICOLON right_ele:" +v[j]->symbol() <<std::endl;          
-          v[i]->match(*v[j]);  
-          v.erase(v.begin()+ j);      
-        }        
+          v[i]->match(*v[j]);
+          v.erase(v.begin()+ j);
+        }
       }
     }
   }
@@ -200,7 +209,7 @@ public:
       if(here->left != NULL && here->right != NULL && here->payload == SEMICOLON){
         vector<Term*> v2 = {};
         recursive_inorder(here->left ,v);
-        recursive_inorder(here->right,v2);          
+        recursive_inorder(here->right,v2);
         for(int i = 0 ; i< v2.size() ; i++){
           for(int j = 0 ; j < v2.size() ; j++){
             Struct* transStruct = dynamic_cast<Struct*>(v2[j]);
@@ -208,41 +217,47 @@ public:
               matchVariabletoNestedStruct(transStruct ,v2[i] );
             }
             if(v2[i]->symbol() == v2[j]->symbol() && i != j){
-              std::cout << "SEMICOLON left_ele:"+v2[i]->symbol() + "\t SEMICOLON right_ele:" +v2[j]->symbol() <<std::endl;          
-              v2[i]->match(*v2[j]);  
-              v2.erase(v2.begin()+ j);      
-            }        
+              v2[i]->match(*v2[j]);
+              v2.erase(v2.begin()+ j);
+            }
           }
-        }  
-      }    
-     
+        }
+      }
     }
   }
-  
+
   Node * expressionTree(){
     // setRoot();
-    return _tree; 
+    return _tree;
   }
   void setRoot(){
     _tree = _nodeofOperation[0];
-    bool setcount = 0;    
+    bool setcount = 0;
     for(int i = 0 ; i < _operation.size() ; i++){
-      if (_operation[i] ==';'){
+      if(_operation[i] ==';'){
         if(setcount !=  1){
-          _tree = _nodeofOperation[i];          
+          _tree = _nodeofOperation[i];
         }
-        setcount = 1 ;         
+        setcount = 1 ;
       }
       else if(_operation[i] ==','){
         if(setcount !=  1){
-          _tree = _nodeofOperation[i];          
+          _tree = _nodeofOperation[i];
         }
-        setcount = 1 ;   
-      }      
-      else if(setcount == 0){
-        _tree = _nodeofOperation[i];
+        setcount = 1 ;
+      }
+      else if(setcount == 0)
+      {
+        if(_operation[i] == '=')
+          _tree = _nodeofOperation[i];
       }
     }
+  }
+  string runEveluate(){
+    if(_tree->evaluate()){
+      return _tree->CombinationOfPayload()+".";
+    }
+    return "false." ;
   }
 
 
@@ -253,18 +268,80 @@ private:
   FRIEND_TEST(ParserTest,listofTermsTwoNumber);
   FRIEND_TEST(ParserTest, createTerm_nestedStruct3);
 
+  // void createTerms() {
+  //   Term* term = createTerm();
+  //   Term* term2;
+  //   if(term!=nullptr)
+  //   {  
+  //     if(term->symbol()==".")
+  //     _operation.push_back(_currentToken);
+  //     else
+  //       _terms.push_back(term);
+  //     while((_currentToken = _scanner.nextToken()) == ',' || _currentToken == '=' ||_currentToken == ';' || _currentToken == 260 ) {
+  //       _operation.push_back((_currentToken));
+  //       term2 = createTerm();
+  //       if(_currentToken ==',' || _currentToken == '=' ||_currentToken == ';' || _currentToken == 260)
+  //         _operation.push_back((_currentToken));
+  //       if(term2)
+  //       _terms.push_back(term2);
+  //     }
+  //   }
+  // }
+
   void createTerms() {
     Term* term = createTerm();
     if(term!=nullptr)
     {
       _terms.push_back(term);
       while((_currentToken = _scanner.nextToken()) == ',' || _currentToken == '=' ||_currentToken == ';') {
-        _operation.push_back((_currentToken));
-        std::cout << ((char)_currentToken)  << std::endl; // 確認放入的符號
         _terms.push_back(createTerm());
       }
     }
   }
+
+  void createTerms_ForMathing() {
+    Term* term = createTerm();
+    Term* term2;
+    if(term!=nullptr)
+    {  
+      if(term->symbol()==".")
+      {
+        // std::cout << "first" << std::endl;
+        // std::cout << (char) _currentToken << std::endl;
+        _operation.push_back(_currentToken);
+      }
+      else
+      {
+        // std::cout << "first" << std::endl;
+        // std::cout << term->symbol() << std::endl;
+        _terms.push_back(term);
+      }
+      while((_currentToken = _scanner.nextToken()) == ',' || _currentToken == '=' ||_currentToken == ';' || _currentToken == 260 ) {
+        // std::cout << "_currentToken" << std::endl;        
+        // std::cout << (char)_currentToken << std::endl;
+        // std::cout << "_currentToken_Leave" << std::endl;        
+        
+        _operation.push_back((_currentToken));
+        term2 = createTerm();
+        if(_currentToken ==',' || _currentToken == '=' ||_currentToken == ';' || _currentToken == 260)
+        {
+          _operation.push_back((_currentToken));
+          // std::cout << "symbol" << std::endl;
+          // std::cout << (char)_currentToken << std::endl;
+        }
+        if(term2)
+        {
+          _terms.push_back(term2);
+          // std::cout << "term2" << std::endl;          
+          // std::cout << term2->symbol() << std::endl;
+        }
+      }
+      // std::cout << "_currentToken" << std::endl;        
+      // std::cout << _currentToken << std::endl;
+      // std::cout << "leave" << std::endl;
+    }
+  }
+
 
   Node * _tree ;
   vector<Term *> _terms;

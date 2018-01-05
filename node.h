@@ -2,7 +2,7 @@
 #define NODE_H
 #include "term.h"
 
-enum Operators {SEMICOLON, COMMA, EQUALITY, TERM};
+enum Operators {SEMICOLON, COMMA, EQUALITY, TERM, DOT};
 
 class Node {
 public:
@@ -15,27 +15,39 @@ public:
   }
 
   bool evaluate(){
-    
-    if(payload == COMMA  ){
+    if(payload == COMMA){
       return (left->evaluate() && right->evaluate()) ;
+    }
+    else if(payload == DOT){
+      throw string("X does never get assignment");
     }
     else if(payload == SEMICOLON){
       bool leftSide = left->evaluate() ;
       bool rightSide = right->evaluate();
-      return (leftSide || rightSide ) ;      
+      return (leftSide || rightSide ) ;
     }
     else if(payload == EQUALITY){
-      std::cout << "evaluate leftSide:"+left->term->symbol()+"\t rightSide:"+right->term->symbol() << std::endl;
-      return (left->term->match(*(right->term))) ;      
+      return (left->term->match(*(right->term))) ;
     }
     return false;
   }
-  Operators payload ;    
+  string CombinationOfPayload() {
+    evaluate();
+    if(payload == TERM)
+      return this->term->symbol();
+    else
+      return left->CombinationOfPayload() + operationTable[payload] + right->CombinationOfPayload();
+  }
+
+  Operators payload ;
 
 public:
   Term* term ;
   Node* left ;
   Node* right ;
+private:
+  string  operationTable [3] = {"; ", ", ", " = " };
+
 };
 
 #endif

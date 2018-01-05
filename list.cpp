@@ -1,9 +1,10 @@
+#include "term.h"
 #include "list.h"
-#include "struct.h"
 #include "variable.h"
 #include "iterator.h"
-
-
+#include <typeinfo>
+#include <iostream>
+#include <string>
 using std::vector;
 
 string List::symbol() const{
@@ -85,99 +86,17 @@ List * List::tail() const {
     List *ls= new List(_clone_elements) ;
     return ls;
 }
-Iterator<Term*> * List::createIterator(){
-    return new ListIterator<Term*>(this);
-}
-Iterator<Term*> * List::createBFSIterator (){
-    vector <Term*> BFSvec = this->BFS();
-    return new BFSIterator<Term*>(BFSvec);
-}
-Iterator<Term*>* List::createDFSIterator(){
-    vector<Term*> DFSvec = this->DFS();
-    return new DFSIterator<Term*>(DFSvec);
-}
-vector<Term*> List::BFS(){
-    queue<Term *> que;
-    vector<Term *> resultVec;
-    Struct * converStruct  ;
-    List * converList;
-    for(int i = 0 ; i < this->arity() ;i++ ){
-        que.push(this->args(i));
-        cout << this->args(i)->symbol() << endl;        
-    }       
-    while(!que.empty()){
-        converList = dynamic_cast<List*>(que.front());
-        converStruct = dynamic_cast<Struct*>(que.front());    
-        if(converList){
-            for(int i =0 ; i<converList->arity() ; i++){
-                que.push(converList->args(i));    
-            }
-        
-        }
-        else if(converStruct){
-            for(int i = 0 ; i < converStruct->arity() ; i++){
-                que.push(converStruct->args(i));                     
-            }
-        }
-        resultVec.push_back(que.front());        
-        que.pop();
-    }
-    return resultVec;
+Iterator<Term*> * List::createIterator()
+{
+	return new ListIterator<Term*>(this);
 }
 
-vector<Term *> List::DFS(){
-    stack <Term *> stk;
-    vector<Term *> resultVec ;
-    Struct * converStruct  ;    
-    List * converList  ;
-    for(int i = 0  ;  i < this->arity() ; i ++){
-      stk.push(this->args(i));      
-      converList = dynamic_cast<List*>(stk.top());
-      converStruct = dynamic_cast<Struct*>(stk.top());      
-      resultVec.push_back(stk.top());
-      if(converList){
-        recursiveofDFS(converList,stk,resultVec);    
-      }
-      else if(converStruct){
-        recursiveofDFS(converStruct,stk,resultVec);   
-      }
-      stk.pop();
-    }
-    return resultVec;
+Iterator<Term*> * List::createDFSIterator()
+{
+	return new DFSIterator<Term*>(this);
 }
 
-void List::recursiveofDFS (List *l , stack<Term*> &stk , vector<Term*> &resultVec){
-    List * converList  ;  
-    Struct * converStruct  ;  
-    for(int i = 0  ;  i < l->arity() ; i ++){
-      stk.push(l->args(i));      
-      resultVec.push_back(stk.top());
-      converList = dynamic_cast<List*>(stk.top());
-      converStruct = dynamic_cast<Struct*>(stk.top());
-      if(converList) {
-        recursiveofDFS(converList,stk,resultVec);    
-      }
-      else if(converStruct){
-        recursiveofDFS(converStruct,stk,resultVec);          
-      }
-      stk.pop();
-    }
+Iterator<Term*> * List::createBFSIterator()
+{
+	return new BFSIterator<Term*>(this);
 }
-void List::recursiveofDFS(Struct *s,stack<Term*> &stk , vector<Term*> &resultVec){
-    Struct * converStruct  ;    
-    List * converList;  
-    for(int i = 0  ;  i < s->arity() ; i ++){
-      stk.push(s->args(i));      
-      resultVec.push_back(stk.top());
-      converList = dynamic_cast<List*> (stk.top()); 
-      converStruct = dynamic_cast<Struct*>(stk.top());      
-      if(converStruct) {
-        recursiveofDFS(converStruct,stk,resultVec);    
-      }
-      else if(converList){
-        recursiveofDFS(converList,stk,resultVec);          
-      }
-      stk.pop();
-    }
- }
-
