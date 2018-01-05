@@ -9,6 +9,7 @@
 #include "iterator.h"
 #include "scanner.h"
 #include "parser.h"
+#include <string>
 
  TEST(Shell, varMatchAtomSuc) {
     Scanner s("FILCO=awesome.");
@@ -194,21 +195,17 @@
     }
   }
   
-//   TEST(Shell, conjunctionMatching_falseAndtrue) {
-//     Scanner s("3=2, X=X.");
-//     Parser p(s);
-//     try {
-//       p.buildExpression();
-      
-//        /**
-//        *  maybe your implementation here.
-//        */
-  
-//       ASSERT_EQ("false.", result);
-//     } catch (std::string &msg) {
-//       FAIL() << msg;
-//     }
-//   }
+  TEST(Shell, conjunctionMatching_falseAndtrue) {
+    Scanner s("3=2, X=X.");
+    Parser p(s);
+    try {
+      p.buildExpression();
+      string result = p.runEveluate();
+      ASSERT_EQ("false.", result);
+    } catch (std::string &msg) {
+      FAIL() << msg;
+    }
+  }
   
   TEST(Shell, conjunctionMatching_falseAndfalse) {
     Scanner s("X=1, X=2, 1=2.");
@@ -238,21 +235,17 @@
 //     }
 //   }
   
-//   TEST(Shell, disjunctionMatching1) {
-//     Scanner s("X=1; X=2.");
-//     Parser p(s);
-//     try {
-//       p.buildExpression();
-      
-//        /**
-//        *  maybe your implementation here.
-//        */
-  
-//       ASSERT_EQ("X = 1; X = 2.", result);
-//     } catch (std::string &msg) {
-//       FAIL() << msg;
-//     }
-//   }
+  TEST(Shell, disjunctionMatching1) {
+    Scanner s("X=1; X=2.");
+    Parser p(s);
+    try {
+      p.buildExpression();
+      string result = p.runEveluate();  
+      ASSERT_EQ("X = 1; X = 2.", result);
+    } catch (std::string &msg) {
+      FAIL() << msg;
+    }
+  }
   
 //   TEST(Shell, disjunctionMatching2) {
 //     Scanner s("X=1; X=1, X=2.");
@@ -331,20 +324,16 @@
 //   }
   
   
-//   TEST(Shell, exceptionMissingPeriodToken) {
-//     Scanner s("X=1");
-//     Parser p(s);
-//     try {
-//       p.buildExpression();
-      
-//        /**
-//        *  maybe your implementation here.
-//        */
-      
-//       FAIL() << "It should throw an exception: Missing token '.'";
-//     } catch (std::string &msg) {
-//       ASSERT_EQ("Missing token '.'", msg);
-//     }
-//   }
+  TEST(Shell, exceptionMissingPeriodToken_TEST) {
+    Scanner s("X=1");
+    Parser p(s);
+    try {
+      p.buildExpression();
+      string result = p.runEveluate();
+      FAIL() << "It should throw an exception: Missing token '.'";
+    } catch (std::string &msg) {
+      ASSERT_EQ("Missing token '.'", msg);
+    }
+  }
 
 #endif

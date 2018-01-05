@@ -1,9 +1,9 @@
 all: hw8
-hw8: mainProlog.o term.o list.o struct.o
+hw8: mainProlog.o struct.o  term.o list.o
 ifeq (${OS}, Windows_NT)
-	g++ -o hw8 mainProlog.o  term.o list.o struct.o -lgtest 
+	g++ -o hw8 mainProlog.o struct.o  term.o list.o -lgtest 
 else 
-	g++ -o hw8 mainProlog.o  term.o list.o struct.o -lgtest -lpthread
+	g++ -o hw8 mainProlog.o struct.o  term.o list.o -lgtest -lpthread
 endif
 
 utAtom: mainAtom.o atom.o
@@ -38,7 +38,9 @@ utIterator: mainIterator.o term.o list.o struct.o
 	g++ -o utIterator mainIterator.o term.o list.o struct.o  -lgtest -lpthread
 mainIterator.o: mainIterator.cpp utIterator.h
 	g++ -std=gnu++0x -c mainIterator.cpp
-mainProlog.o: mainProlog.cpp utException.h utExpression.h
+# mainProlog.o: mainProlog.cpp utException.h utExpression.h
+# 	g++ -std=gnu++0x -c mainProlog.cpp
+mainProlog.o: mainProlog.cpp struct.o variable.h term.o number.h list.o iterator.h scanner.h parser.h node.h
 	g++ -std=gnu++0x -c mainProlog.cpp
 
 
